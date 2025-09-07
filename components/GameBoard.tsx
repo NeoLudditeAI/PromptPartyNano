@@ -5,7 +5,6 @@ import React, { useState, useEffect } from 'react'
 import { Game, PlayerId, User, ImageGenerationResult } from '../types'
 import PromptDisplay from './PromptDisplay'
 import ImageDisplay from './ImageDisplay'
-import TurnInput from './TurnInput'
 import EditTurnInput from './EditTurnInput'
 import PlayerIndicator from './PlayerIndicator'
 import TurnNotification from './TurnNotification'
@@ -153,27 +152,14 @@ export default function GameBoard({
       // Set generating state for all players
       await setGenerating(game.id)
       
-      if (game.gameMode === 'edit') {
-        // Edit mode: All turns are edit commands
-        // The seed image should already be in imageHistory[0] from game creation
-        // Send edit command with the previous image to Nano Banana
-        await generateImageForGame(
-          updatedGame.id,
-          text, // This is the edit command
-          async () => {} // Empty callback since Firebase handles the update
-        )
-      } else {
-        // Regular mode: Generate image from the full prompt
-        const { buildFullPrompt } = await import('../lib/game')
-        const fullPrompt = buildFullPrompt(updatedGame.turns)
-        
-        // Generate and store the image
-        await generateImageForGame(
-          updatedGame.id,
-          fullPrompt,
-          async () => {} // Empty callback since Firebase handles the update
-        )
-      }
+      // All games are edit mode: All turns are edit commands
+      // The seed image should already be in imageHistory[0] from game creation
+      // Send edit command with the previous image to Nano Banana
+      await generateImageForGame(
+        updatedGame.id,
+        text, // This is the edit command
+        async () => {} // Empty callback since Firebase handles the update
+      )
       
       // Clear generating state
       await clearGenerating(game.id)
@@ -236,22 +222,13 @@ export default function GameBoard({
           
           {!isGameComplete && (
             <>
-              {game.gameMode === 'edit' ? (
-                <EditTurnInput 
-                  onSubmit={handleTurnSubmit}
-                  isSubmitting={isSubmitting}
-                  currentPlayerId={currentPlayerId}
-                  players={players}
-                  isFirstTurn={game.turns.length === 0}
-                />
-              ) : (
-                <TurnInput 
-                  onSubmit={handleTurnSubmit}
-                  isSubmitting={isSubmitting}
-                  currentPlayerId={currentPlayerId}
-                  players={players}
-                />
-              )}
+              <EditTurnInput 
+                onSubmit={handleTurnSubmit}
+                isSubmitting={isSubmitting}
+                currentPlayerId={currentPlayerId}
+                players={players}
+                isFirstTurn={game.turns.length === 0}
+              />
             </>
           )}
           

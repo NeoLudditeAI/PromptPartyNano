@@ -486,19 +486,9 @@ function HomePageContent() {
         <div className="mb-4">
           <h3 className="font-semibold mb-2 text-gray-900">How to Play</h3>
           <div className="text-sm text-gray-600 space-y-1">
-            {game.gameMode === 'edit' ? (
-              <>
-                <p>• Each player submits edit commands to modify the image</p>
-                <p>• Commands like "make the sky blue" or "add a hat"</p>
-                <p>• Game ends when everyone has contributed</p>
-              </>
-            ) : (
-              <>
-                <p>• Each player adds to the prompt in turn</p>
-                <p>• The AI generates an image from your collective story</p>
-                <p>• Game ends when everyone has contributed</p>
-              </>
-            )}
+            <p>• Each player submits edit commands to modify the image</p>
+            <p>• Commands like "make the sky blue" or "add a hat"</p>
+            <p>• Game ends when everyone has contributed</p>
           </div>
         </div>
 
@@ -515,11 +505,7 @@ function HomePageContent() {
           </div>
         ) : (
           <div className="text-center text-gray-500">
-            {game.gameMode === 'edit' ? (
-              <>Player 1 created the seed image. Waiting for Player 2 to start editing...</>
-            ) : (
-              <>Waiting for creator to start the game...</>
-            )}
+            Player 1 created the seed image. Waiting for Player 2 to start editing...
           </div>
         )}
 

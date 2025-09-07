@@ -115,7 +115,7 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
         {/* Image Info */}
         <div className="mt-4 text-sm text-gray-600">
           <p>Images are generated using Google Gemini 2.5 Flash Image Preview</p>
-          <p>Each turn creates a new image from the full prompt</p>
+          <p>Each turn edits the previous image based on player commands</p>
         </div>
       </div>
     )
@@ -347,11 +347,7 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
       {/* Image Info */}
       <div className="mt-4 text-sm text-gray-600">
         <p>Images are generated using Google Gemini 2.5 Flash Image Preview</p>
-        {game.gameMode === 'edit' ? (
-          <p>Each turn edits the previous image based on player commands</p>
-        ) : (
-          <p>Each turn creates a new image from the full prompt</p>
-        )}
+        <p>Each turn edits the previous image based on player commands</p>
         {imageCount > 1 && (
           <p className="text-blue-600 font-medium mt-1">
             Use the arrows, keyboard (← →), or thumbnails to browse all {imageCount} generated images
