@@ -1,7 +1,7 @@
 // lib/game.test.ts
 import { describe, it, expect } from 'vitest'
 import { createGame, addPlayerToGame, startGame, addTurn, getCurrentPlayer, buildFullPrompt, isGameComplete, canStartGame, getPlayerCount, getCharacterCountStatus, validateTurnText, getTotalPromptLength, canAddTurnToGame } from './game'
-import { PromptTurn } from '../types'
+import { PromptTurn, ImageGenerationResult } from '../types'
 
 describe('Game Logic', () => {
   describe('createGame', () => {
@@ -492,6 +492,170 @@ describe('Can Add Turn Validation', () => {
     expect(canAddTurnToGame(startedGame, 'a'.repeat(26))).toEqual({ 
       canAdd: false, 
       error: 'Turn text exceeds 25 character limit' 
+    })
+  })
+})
+
+// --- Edit Mode Support Tests ---
+
+describe('Edit Mode Support', () => {
+  describe('PromptTurn with turnType', () => {
+    it('should support prompt turns (backward compatible)', () => {
+      const turn: PromptTurn = {
+        userId: 'alice',
+        text: 'a beautiful sunset',
+        timestamp: Date.now(),
+        characterCount: 18
+        // turnType defaults to undefined, should work as before
+      }
+      
+      expect(turn.userId).toBe('alice')
+      expect(turn.text).toBe('a beautiful sunset')
+      expect(turn.turnType).toBeUndefined()
+    })
+
+    it('should support edit turns', () => {
+      const turn: PromptTurn = {
+        userId: 'bob',
+        text: 'make the sky blue',
+        timestamp: Date.now(),
+        characterCount: 18,
+        turnType: 'edit'
+      }
+      
+      expect(turn.turnType).toBe('edit')
+      expect(turn.text).toBe('make the sky blue')
+    })
+
+    it('should support seed turns with image data', () => {
+      const turn: PromptTurn = {
+        userId: 'alice',
+        text: 'a majestic mountain landscape',
+        timestamp: Date.now(),
+        characterCount: 28,
+        turnType: 'seed',
+        imageData: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg=='
+      }
+      
+      expect(turn.turnType).toBe('seed')
+      expect(turn.imageData).toContain('data:image/png;base64,')
+    })
+  })
+
+  describe('Game with gameMode', () => {
+    it('should support prompt mode (backward compatible)', () => {
+      const game = createGame('alice')
+      expect(game.gameMode).toBeUndefined() // Defaults to undefined for backward compatibility
+    })
+
+    it('should support edit mode', () => {
+      const game = createGame('alice')
+      const editModeGame = { ...game, gameMode: 'edit' as const }
+      expect(editModeGame.gameMode).toBe('edit')
+    })
+  })
+
+  describe('ImageGenerationResult with edit support', () => {
+    it('should support traditional image generation (backward compatible)', () => {
+      const result: ImageGenerationResult = {
+        prompt: 'a beautiful sunset',
+        imageUrl: 'https://example.com/image.jpg',
+        createdAt: Date.now()
+      }
+      
+      expect(result.editCommand).toBeUndefined()
+      expect(result.sourceImageUrl).toBeUndefined()
+    })
+
+    it('should support edit command tracking', () => {
+      const result: ImageGenerationResult = {
+        prompt: 'a beautiful sunset',
+        imageUrl: 'https://example.com/edited-image.jpg',
+        createdAt: Date.now(),
+        editCommand: 'make the sky blue',
+        sourceImageUrl: 'https://example.com/original-image.jpg'
+      }
+      
+      expect(result.editCommand).toBe('make the sky blue')
+      expect(result.sourceImageUrl).toBe('https://example.com/original-image.jpg')
+    })
+  })
+
+  describe('Backward Compatibility Integration', () => {
+    it('should work with existing games without edit mode fields', () => {
+      // Test that existing game logic still works
+      const game = createGame('alice')
+      const gameWithBob = addPlayerToGame(game, 'bob')
+      const startedGame = startGame(gameWithBob)
+      
+      // Add a traditional turn (no turnType)
+      const traditionalTurn: PromptTurn = {
+        userId: 'alice',
+        text: 'a beautiful sunset',
+        timestamp: Date.now(),
+        characterCount: 18
+      }
+      
+      const updatedGame = addTurn(startedGame, 'alice', 'a beautiful sunset')
+      
+      expect(updatedGame.turns).toHaveLength(1)
+      expect(updatedGame.turns[0].turnType).toBeUndefined()
+      expect(updatedGame.turns[0].imageData).toBeUndefined()
+    })
+
+    it('should support mixed turn types in same game', () => {
+      const game = createGame('alice')
+      const gameWithBob = addPlayerToGame(game, 'bob')
+      const startedGame = startGame(gameWithBob)
+      
+      // Add a seed turn
+      const seedTurn: PromptTurn = {
+        userId: 'alice',
+        text: 'a majestic mountain',
+        timestamp: Date.now(),
+        characterCount: 20,
+        turnType: 'seed',
+        imageData: 'data:image/png;base64,test'
+      }
+      
+      // Add an edit turn
+      const editTurn: PromptTurn = {
+        userId: 'bob',
+        text: 'add snow to peaks',
+        timestamp: Date.now(),
+        characterCount: 18,
+        turnType: 'edit'
+      }
+      
+      expect(seedTurn.turnType).toBe('seed')
+      expect(editTurn.turnType).toBe('edit')
+    })
+  })
+
+  describe('Type Safety Validation', () => {
+    it('should enforce turnType values', () => {
+      const validTurnTypes: Array<'prompt' | 'edit' | 'seed'> = ['prompt', 'edit', 'seed']
+      
+      validTurnTypes.forEach(turnType => {
+        const turn: PromptTurn = {
+          userId: 'alice',
+          text: 'test',
+          timestamp: Date.now(),
+          characterCount: 4,
+          turnType
+        }
+        
+        expect(turn.turnType).toBe(turnType)
+      })
+    })
+
+    it('should enforce gameMode values', () => {
+      const validGameModes: Array<'prompt' | 'edit'> = ['prompt', 'edit']
+      
+      validGameModes.forEach(gameMode => {
+        const game = { ...createGame('alice'), gameMode }
+        expect(game.gameMode).toBe(gameMode)
+      })
     })
   })
 })

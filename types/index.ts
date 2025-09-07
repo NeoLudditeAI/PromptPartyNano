@@ -82,6 +82,10 @@ export type PromptTurn = {
   text: string;          // Their added phrase (limited to MAX_TURN_LENGTH)
   timestamp: number;     // Unix ms timestamp when submitted
   characterCount: number; // Number of characters in this turn
+  
+  // New optional fields for edit mode (backward compatible)
+  turnType?: 'prompt' | 'edit' | 'seed';  // What kind of turn this is
+  imageData?: string;                     // Base64 image for seed turns
 };
 
 // --- Game Status Lifecycle ---
@@ -105,6 +109,9 @@ export interface Game {
   maxPlayers: number;                // From GAME_CONFIG.MAX_PLAYERS
   config: GameConfig;                // Game configuration (for future flexibility)
   isGenerating?: boolean;            // Optional: true when image is being generated
+  
+  // Edit mode support (backward compatible)
+  gameMode?: 'prompt' | 'edit';      // Defaults to 'prompt' for existing games
 }
 
 // --- User Structure ---
@@ -141,4 +148,8 @@ export type ImageGenerationResult = {
   reactionUsers?: {                // Track who reacted (prevent duplicates, enable future attribution)
     [emoji: string]: PlayerId[];   // "❤️": ["alice", "bob"], "😍": ["charlie"]
   };
+  
+  // Edit mode support (backward compatible)
+  editCommand?: string;              // The edit command that generated this image
+  sourceImageUrl?: string;           // Previous image that was edited
 };
