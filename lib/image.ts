@@ -103,7 +103,7 @@ export async function generateEnhancedImage(
   config: Partial<GeminiConfig> = {}
 ): Promise<ImageGenerationResult> {
   const enhancedPrompt = enhancePromptForGemini(basePrompt)
-  return await generateImageFromPrompt(enhancedPrompt, config)
+  return await generateImageFromPrompt(enhancedPrompt, undefined, config)
 }
 
 // Utility function to validate image URLs
