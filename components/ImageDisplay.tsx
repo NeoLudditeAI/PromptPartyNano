@@ -131,19 +131,19 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
       return { reactions: { '❤️': 0, '😍': 0, '🎨': 0 }, userHasReacted: { '❤️': false, '😍': false, '🎨': false } }
     }
     
-    const reactions = currentImage.reactions || {} as Record<string, number>
-    const reactionUsers = currentImage.reactionUsers || {} as Record<string, string[]>
+    const reactions = (currentImage.reactions || {}) as Record<string, number>
+    const reactionUsers = (currentImage.reactionUsers || {}) as Record<string, string[]>
     
     return {
       reactions: {
-        '❤️': reactions['❤️'] || 0,
-        '😍': reactions['😍'] || 0,
-        '🎨': reactions['🎨'] || 0
+        '❤️': (reactions as any)['❤️'] || 0,
+        '😍': (reactions as any)['😍'] || 0,
+        '🎨': (reactions as any)['🎨'] || 0
       },
       userHasReacted: {
-        '❤️': (reactionUsers['❤️'] || []).includes(currentPlayerId),
-        '😍': (reactionUsers['😍'] || []).includes(currentPlayerId),
-        '🎨': (reactionUsers['🎨'] || []).includes(currentPlayerId)
+        '❤️': ((reactionUsers as any)['❤️'] || []).includes(currentPlayerId),
+        '😍': ((reactionUsers as any)['😍'] || []).includes(currentPlayerId),
+        '🎨': ((reactionUsers as any)['🎨'] || []).includes(currentPlayerId)
       }
     }
   }
