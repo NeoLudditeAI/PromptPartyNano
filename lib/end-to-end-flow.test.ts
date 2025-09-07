@@ -10,6 +10,10 @@ global.fetch = vi.fn()
 describe('Complete Edit Mode Flow: Game Creation → First Turn', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    // Reset fetch mock to ensure clean state
+    vi.mocked(fetch).mockClear()
+    // Reset all mocks to undefined to ensure clean state
+    vi.mocked(fetch).mockReset()
   })
 
   describe('Step 1: Game Creation with Seed Image', () => {
@@ -286,7 +290,7 @@ describe('Complete Edit Mode Flow: Game Creation → First Turn', () => {
       
       const mockResponse = {
         success: true,
-        imageUrl: 'data:image/png;base64,edited-image',
+        imageUrl: 'data:image/png;base64,sky-blue-image',
         prompt: command,
         sourceImageUrl: previousImage,
         createdAt: Date.now()
@@ -300,7 +304,7 @@ describe('Complete Edit Mode Flow: Game Creation → First Turn', () => {
       const result = await generateImageFromPrompt(command, previousImage)
 
       expect(result.prompt).toBe(command)
-      expect(result.imageUrl).toBe('data:image/png;base64,edited-image')
+      expect(result.imageUrl).toBe('data:image/png;base64,sky-blue-image')
     })
 
     it('should handle "Add a red hat" - Object addition', async () => {
@@ -309,7 +313,7 @@ describe('Complete Edit Mode Flow: Game Creation → First Turn', () => {
       
       const mockResponse = {
         success: true,
-        imageUrl: 'data:image/png;base64,edited-image',
+        imageUrl: 'data:image/png;base64,red-hat-image',
         prompt: command,
         sourceImageUrl: previousImage,
         createdAt: Date.now()
@@ -323,7 +327,7 @@ describe('Complete Edit Mode Flow: Game Creation → First Turn', () => {
       const result = await generateImageFromPrompt(command, previousImage)
 
       expect(result.prompt).toBe(command)
-      expect(result.imageUrl).toBe('data:image/png;base64,edited-image')
+      expect(result.imageUrl).toBe('data:image/png;base64,red-hat-image')
     })
 
     it('should handle "Remove the background" - Object removal', async () => {
@@ -332,7 +336,7 @@ describe('Complete Edit Mode Flow: Game Creation → First Turn', () => {
       
       const mockResponse = {
         success: true,
-        imageUrl: 'data:image/png;base64,edited-image',
+        imageUrl: 'data:image/png;base64,no-background-image',
         prompt: command,
         sourceImageUrl: previousImage,
         createdAt: Date.now()
@@ -346,7 +350,7 @@ describe('Complete Edit Mode Flow: Game Creation → First Turn', () => {
       const result = await generateImageFromPrompt(command, previousImage)
 
       expect(result.prompt).toBe(command)
-      expect(result.imageUrl).toBe('data:image/png;base64,edited-image')
+      expect(result.imageUrl).toBe('data:image/png;base64,no-background-image')
     })
 
     it('should handle "Change to black and white" - Style modification', async () => {
@@ -355,7 +359,7 @@ describe('Complete Edit Mode Flow: Game Creation → First Turn', () => {
       
       const mockResponse = {
         success: true,
-        imageUrl: 'data:image/png;base64,edited-image',
+        imageUrl: 'data:image/png;base64,bw-image',
         prompt: command,
         sourceImageUrl: previousImage,
         createdAt: Date.now()
@@ -369,7 +373,7 @@ describe('Complete Edit Mode Flow: Game Creation → First Turn', () => {
       const result = await generateImageFromPrompt(command, previousImage)
 
       expect(result.prompt).toBe(command)
-      expect(result.imageUrl).toBe('data:image/png;base64,edited-image')
+      expect(result.imageUrl).toBe('data:image/png;base64,bw-image')
     })
 
     it('should handle "Make the person smile" - Expression change', async () => {
@@ -378,7 +382,7 @@ describe('Complete Edit Mode Flow: Game Creation → First Turn', () => {
       
       const mockResponse = {
         success: true,
-        imageUrl: 'data:image/png;base64,edited-image',
+        imageUrl: 'data:image/png;base64,smiling-image',
         prompt: command,
         sourceImageUrl: previousImage,
         createdAt: Date.now()
@@ -392,7 +396,7 @@ describe('Complete Edit Mode Flow: Game Creation → First Turn', () => {
       const result = await generateImageFromPrompt(command, previousImage)
 
       expect(result.prompt).toBe(command)
-      expect(result.imageUrl).toBe('data:image/png;base64,edited-image')
+      expect(result.imageUrl).toBe('data:image/png;base64,smiling-image')
     })
   })
 
