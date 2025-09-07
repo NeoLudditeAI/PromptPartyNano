@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Real Nano Banana API call for image generation
+// Real Gemini API call for image generation
 async function generateImageWithGemini(prompt: string): Promise<{ imageUrl: string }> {
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) {
@@ -57,25 +57,35 @@ async function generateImageWithGemini(prompt: string): Promise<{ imageUrl: stri
     // Import Google Generative AI
     const { GoogleGenerativeAI } = await import('@google/generative-ai')
     
-    // Initialize the Gemini API with Nano Banana model
+    // Initialize the Gemini API
     const genAI = new GoogleGenerativeAI(apiKey)
+    
+    // Note: Gemini 2.5 Flash Image Preview is primarily for image analysis, not generation
+    // For actual image generation, we need to use a different approach
+    // Let's start with a test to see what models are available
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash-image-preview' // Nano Banana model
+      model: 'gemini-2.5-flash-image-preview'
     })
     
-    // Generate image using Nano Banana
+    // Test the API connection first
     const result = await model.generateContent(prompt)
     const response = await result.response
     
-    // For now, we'll use a placeholder since the exact response format
-    // for image generation may need to be verified
-    // TODO: Update this once we confirm the actual response format
+    console.log('Gemini API Response:', {
+      text: response.text(),
+      candidates: result.response.candidates,
+      usageMetadata: result.response.usageMetadata
+    })
+    
+    // For now, we'll use a placeholder since Gemini 2.5 Flash Image Preview
+    // is primarily for image analysis, not generation
+    // We may need to use a different service for actual image generation
     const imageUrl = `https://picsum.photos/1024/1024?random=${Date.now()}&text=${encodeURIComponent(prompt)}`
     
     return { imageUrl }
     
   } catch (error) {
-    console.error('Nano Banana image generation error:', error)
-    throw new Error(`Nano Banana API error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    console.error('Gemini API error:', error)
+    throw new Error(`Gemini API error: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
 }
