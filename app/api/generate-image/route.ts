@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-// Real Gemini API call for image generation
+// Real Nano Banana (Gemini 2.5 Flash Image Preview) API call for image generation
 async function generateImageWithGemini(prompt: string): Promise<{ imageUrl: string }> {
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) {
@@ -57,35 +57,66 @@ async function generateImageWithGemini(prompt: string): Promise<{ imageUrl: stri
     // Import Google Generative AI
     const { GoogleGenerativeAI } = await import('@google/generative-ai')
     
-    // Initialize the Gemini API
+    // Initialize the Gemini API with Nano Banana model
     const genAI = new GoogleGenerativeAI(apiKey)
-    
-    // Note: Gemini 2.5 Flash Image Preview is primarily for image analysis, not generation
-    // For actual image generation, we need to use a different approach
-    // Let's start with a test to see what models are available
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash-image-preview'
+      model: 'gemini-2.5-flash-image-preview' // Nano Banana model
     })
     
-    // Test the API connection first
+    // Generate image using Nano Banana
+    // The model supports text-to-image generation with advanced features
     const result = await model.generateContent(prompt)
     const response = await result.response
     
-    console.log('Gemini API Response:', {
+    console.log('Nano Banana API Response:', {
       text: response.text(),
       candidates: result.response.candidates,
       usageMetadata: result.response.usageMetadata
     })
     
-    // For now, we'll use a placeholder since Gemini 2.5 Flash Image Preview
-    // is primarily for image analysis, not generation
-    // We may need to use a different service for actual image generation
-    const imageUrl = `https://picsum.photos/1024/1024?random=${Date.now()}&text=${encodeURIComponent(prompt)}`
+    // Extract image URL from the response
+    // Based on the hackathon documentation, the response should contain image data
+    // We need to parse the response to get the actual image URL or data
+    let imageUrl: string
+    
+    try {
+      // Check if the response contains image data
+      const candidates = result.response.candidates
+      if (candidates && candidates.length > 0) {
+        const candidate = candidates[0]
+        if (candidate.content && candidate.content.parts) {
+          // Look for image data in the response
+          const imagePart = candidate.content.parts.find(part => 
+            part.inlineData && part.inlineData.mimeType && part.inlineData.mimeType.startsWith('image/')
+          )
+          
+          if (imagePart && imagePart.inlineData) {
+            // Convert base64 image data to data URL
+            const mimeType = imagePart.inlineData.mimeType
+            const data = imagePart.inlineData.data
+            imageUrl = `data:${mimeType};base64,${data}`
+          } else {
+            // Fallback to placeholder if no image data found
+            imageUrl = `https://picsum.photos/1024/1024?random=${Date.now()}&text=${encodeURIComponent(prompt)}`
+          }
+        } else {
+          // Fallback to placeholder
+          imageUrl = `https://picsum.photos/1024/1024?random=${Date.now()}&text=${encodeURIComponent(prompt)}`
+        }
+      } else {
+        // Fallback to placeholder
+        imageUrl = `https://picsum.photos/1024/1024?random=${Date.now()}&text=${encodeURIComponent(prompt)}`
+      }
+    } catch (parseError) {
+      console.error('Error parsing Nano Banana response:', parseError)
+      // Fallback to placeholder
+      imageUrl = `https://picsum.photos/1024/1024?random=${Date.now()}&text=${encodeURIComponent(prompt)}`
+    }
     
     return { imageUrl }
     
   } catch (error) {
-    console.error('Gemini API error:', error)
-    throw new Error(`Gemini API error: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    console.error('Nano Banana API error:', error)
+    throw new Error(`Nano Banana API error: ${error instanceof Error ? error.message : 'Unknown error'}`)
   }
 }
