@@ -18,16 +18,16 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
 
   // Auto-show latest image when new images are added
   useEffect(() => {
-    if (imageCount > 0) {
+    if (totalImageCount > 0) {
       // Always show the latest image (last in the array)
-      setCurrentImageIndex(imageCount - 1)
+      setCurrentImageIndex(totalImageCount - 1)
     }
-  }, [imageCount, game.imageHistory.length])
+  }, [totalImageCount, game.imageHistory.length])
 
   // Keyboard navigation
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (imageCount <= 1) return
+      if (totalImageCount <= 1) return
       
       switch (event.key) {
         case 'ArrowLeft':
@@ -43,59 +43,36 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
 
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [currentImageIndex, imageCount])
+  }, [currentImageIndex, totalImageCount])
 
-  // If no images in history, show seed image or empty state
-  if (imageCount === 0) {
-    // Check if we have a seed image to show
-    if (game.seedImage) {
-      return (
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-semibold text-gray-900">
-              🎨 Starting Image
-            </h3>
-          </div>
-          
-          <div className="space-y-4">
-            {/* Seed Image */}
-            <div className="relative">
-              <img
-                src={game.seedImage}
-                alt="Starting image"
-                className="w-full h-64 object-cover rounded-lg border-2 border-gray-200 shadow-sm"
-              />
-              
-              {/* Seed Badge */}
-              <div className="absolute top-2 right-2 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-medium">
-                Starting Image
-              </div>
-            </div>
-            
-            {/* Image Info */}
-            <div className="text-center">
-              <p className="text-sm text-gray-600">
-                {game.seedImagePrompt === 'Uploaded image' 
-                  ? 'Uploaded by game creator' 
-                  : `Created from: "${game.seedImagePrompt}"`
-                }
-              </p>
-              <p className="text-xs text-gray-500 mt-1">
-                Ready for editing!
-              </p>
-            </div>
-          </div>
-          
-          {/* Image Info */}
-          <div className="mt-4 text-sm text-gray-600">
-            <p>Players will edit this image with their commands</p>
-            <p>Each turn creates a new version based on the previous image</p>
-          </div>
-        </div>
-      )
+  // Create a combined image list that includes seed image if it exists
+  const getAllImages = () => {
+    const images = []
+    
+    // Add seed image first if it exists and is not already in history
+    if (game.seedImage && (!game.imageHistory.length || game.imageHistory[0].imageUrl !== game.seedImage)) {
+      images.push({
+        id: 'seed-image',
+        imageUrl: game.seedImage,
+        prompt: game.seedImagePrompt || 'Starting image',
+        createdAt: Date.now(),
+        reactions: {},
+        reactionUsers: {},
+        isSeedImage: true
+      })
     }
     
-    // No seed image - show empty state
+    // Add all images from history
+    images.push(...game.imageHistory)
+    
+    return images
+  }
+
+  const allImages = getAllImages()
+  const totalImageCount = allImages.length
+
+  // If no images at all, show empty state
+  if (totalImageCount === 0) {
     return (
       <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-4">
@@ -121,9 +98,9 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
     )
   }
 
-  const currentImage = game.imageHistory[currentImageIndex]
+  const currentImage = allImages[currentImageIndex]
   const isFirst = currentImageIndex === 0
-  const isLast = currentImageIndex === imageCount - 1
+  const isLast = currentImageIndex === totalImageCount - 1
 
   const goToPrevious = () => {
     if (!isFirst) {
@@ -206,9 +183,9 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
           🎨 Generated Image
         </h3>
         
-        {imageCount > 1 && (
+        {totalImageCount > 1 && (
           <div className="text-sm text-gray-600">
-            {currentImageIndex + 1} of {imageCount}
+            {currentImageIndex + 1} of {totalImageCount}
           </div>
         )}
       </div>
@@ -222,13 +199,13 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
             className="w-full h-64 object-cover rounded-lg border-2 border-gray-200 shadow-sm"
           />
           
-          {/* AI Generated Badge */}
+          {/* Image Badge */}
           <div className="absolute top-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full text-xs font-medium">
-            AI Generated
+            {currentImage.isSeedImage ? 'Starting Image' : 'AI Generated'}
           </div>
           
           {/* Navigation Arrows - Only show if multiple images */}
-          {imageCount > 1 && (
+          {totalImageCount > 1 && (
             <>
               {/* Left Arrow */}
               {!isFirst && (
@@ -294,22 +271,22 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
         {/* Image Info */}
         <div className="text-center">
           <p className="text-sm text-gray-600">
-            Generated from: <span className="text-gray-900 font-medium">
+            {currentImage.isSeedImage ? 'Starting image' : 'Generated from'}: <span className="text-gray-900 font-medium">
               "{currentImage.prompt}"
             </span>
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            {formatDate(currentImage.createdAt)}
+            {currentImage.isSeedImage ? 'Ready for editing!' : formatDate(currentImage.createdAt)}
           </p>
         </div>
       </div>
       
       {/* Thumbnail Navigation - Only show if multiple images */}
-      {imageCount > 1 && (
+      {totalImageCount > 1 && (
         <div className="mt-4">
           <p className="text-sm font-medium text-gray-900 mb-2">All Images:</p>
           <div className="flex gap-2 overflow-x-auto pb-2">
-            {game.imageHistory.map((image, index) => {
+            {allImages.map((image, index) => {
               // Calculate total reactions for this image
               const imageReactions = image.reactions || {}
               const totalReactions = Object.values(imageReactions).reduce((sum: number, count: any) => sum + (count || 0), 0)
@@ -348,9 +325,9 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
       <div className="mt-4 text-sm text-gray-600">
         <p>Images are generated using Google Gemini 2.5 Flash Image Preview</p>
         <p>Each turn edits the previous image based on player commands</p>
-        {imageCount > 1 && (
+        {totalImageCount > 1 && (
           <p className="text-blue-600 font-medium mt-1">
-            Use the arrows, keyboard (← →), or thumbnails to browse all {imageCount} generated images
+            Use the arrows, keyboard (← →), or thumbnails to browse all {totalImageCount} images
           </p>
         )}
       </div>
