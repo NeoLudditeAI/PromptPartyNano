@@ -10,15 +10,13 @@ interface EditTurnInputProps {
   isSubmitting: boolean
   currentPlayerId: PlayerId
   players?: User[]
-  isFirstTurn?: boolean
 }
 
 export default function EditTurnInput({ 
   onSubmit, 
   isSubmitting, 
   currentPlayerId,
-  players = [],
-  isFirstTurn = false
+  players = []
 }: EditTurnInputProps) {
   const [inputText, setInputText] = useState('')
 
@@ -75,25 +73,19 @@ export default function EditTurnInput({
   return (
     <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
       <h3 className="text-lg font-semibold text-gray-900 mb-4">
-        {isFirstTurn ? '🎨 Create Initial Image' : '✏️ Edit the Image'}
+        ✏️ Edit the Image
       </h3>
       
       <form onSubmit={handleSubmit} className="space-y-4">
         <div>
           <label htmlFor="edit-input" className="block text-sm font-medium text-gray-700 mb-2">
-            {isFirstTurn 
-              ? `Your initial prompt (as ${getPlayerName(currentPlayerId)}):`
-              : `Your edit command (as ${getPlayerName(currentPlayerId)}):`
-            }
+            Your edit instruction (as {getPlayerName(currentPlayerId)}):
           </label>
           <textarea
             id="edit-input"
             value={inputText}
             onChange={(e) => setInputText(e.target.value)}
-            placeholder={isFirstTurn 
-              ? "Describe the image you want to create... (e.g., 'A majestic mountain landscape at sunset')"
-              : "Describe how to edit the image... (e.g., 'make the sky blue', 'add snow to peaks', 'remove the hat')"
-            }
+            placeholder="How would you like to modify the image? (e.g., 'make the sky blue', 'add snow to peaks', 'remove the hat')"
             className={`w-full px-4 py-3 bg-white border rounded-lg text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-opacity-50 resize-none ${getBorderColor(characterStatus)}`}
             rows={3}
             disabled={isSubmitting}
@@ -122,28 +114,15 @@ export default function EditTurnInput({
               : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
           }`}
         >
-          {isSubmitting 
-            ? 'Generating Image...' 
-            : isFirstTurn 
-              ? 'Create Initial Image' 
-              : 'Submit Edit'
-          }
+          {isSubmitting ? 'Processing Edit...' : 'Submit Edit'}
         </button>
       </form>
       
       <div className="mt-4 text-sm text-gray-600">
-        {isFirstTurn ? (
-          <>
-            <p>🎨 <strong>Create the starting image</strong> that other players will edit</p>
-            <p className="mt-1">💡 Be descriptive: "A majestic mountain landscape at sunset with a lake"</p>
-          </>
-        ) : (
-          <>
-            <p>✏️ <strong>Edit the current image</strong> with simple commands</p>
-            <p className="mt-1">💡 Examples: "make the sky blue", "add snow to peaks", "remove the hat"</p>
-            <p className="mt-1">📝 Keep it concise - you have {GAME_CONFIG.MAX_TURN_LENGTH} characters per turn.</p>
-          </>
-        )}
+        <p>✏️ <strong>Edit the current image</strong> with simple instructions</p>
+        <p className="mt-1">💡 Examples: "make the sky blue", "add snow to peaks", "remove the hat"</p>
+        <p className="mt-1">🎯 Each edit maintains the subject's identity while making changes</p>
+        <p className="mt-1">📝 Keep it concise - you have {GAME_CONFIG.MAX_TURN_LENGTH} characters per turn.</p>
       </div>
     </div>
   )

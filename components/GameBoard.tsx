@@ -232,7 +232,6 @@ export default function GameBoard({
                 isSubmitting={isSubmitting}
                 currentPlayerId={currentPlayerId}
                 players={players}
-                isFirstTurn={game.turns.length === 0}
               />
             </>
           )}

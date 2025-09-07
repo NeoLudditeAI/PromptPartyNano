@@ -486,9 +486,10 @@ function HomePageContent() {
         <div className="mb-4">
           <h3 className="font-semibold mb-2 text-gray-900">How to Play</h3>
           <div className="text-sm text-gray-600 space-y-1">
-            <p>• Each player submits edit commands to modify the image</p>
-            <p>• Commands like "make the sky blue" or "add a hat"</p>
-            <p>• Game ends when everyone has contributed</p>
+            <p>• Player 1 creates the starting image (upload or generate)</p>
+            <p>• Other players take turns editing with simple instructions</p>
+            <p>• Each edit maintains the subject's identity while making changes</p>
+            <p>• Watch the image evolve through the complete editing chain!</p>
           </div>
         </div>
 
@@ -505,7 +506,7 @@ function HomePageContent() {
           </div>
         ) : (
           <div className="text-center text-gray-500">
-            Player 1 created the seed image. Waiting for Player 2 to start editing...
+            Starting image ready! Waiting for Player 2 to make the first edit...
           </div>
         )}
 
@@ -575,7 +576,7 @@ function HomePageContent() {
                 {/* Game Creation Mode Selection */}
                 <div>
                   <label className="block text-sm font-medium text-gray-700 mb-3">
-                    How would you like to start the game?
+                    Choose your starting image:
                   </label>
                   <div className="grid grid-cols-2 gap-3">
                     <button
@@ -649,7 +650,7 @@ function HomePageContent() {
                 {gameCreationMode === 'generate' && (
                   <div>
                     <label htmlFor="initial-prompt" className="block text-sm font-medium text-gray-700 mb-2">
-                      Initial Image Prompt
+                      Starting Image Prompt
                     </label>
                     <textarea
                       id="initial-prompt"
@@ -661,7 +662,7 @@ function HomePageContent() {
                       className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
                     <p className="text-xs text-gray-500 mt-1">
-                      This will be used to generate the initial image that other players will edit.
+                      This creates the starting image that other players will edit with their commands.
                     </p>
                   </div>
                 )}
