@@ -176,6 +176,19 @@ function HomePageContent() {
         gameMode: 'edit' as const
       }
       
+      // If Player 1 uploaded an image, we need to store it and use it for the first turn
+      if (gameCreationMode === 'upload' && uploadedImage) {
+        // Store the uploaded image in the game state
+        // For now, we'll store it in a way that can be accessed by the first turn
+        // TODO: Implement proper image storage and retrieval
+        console.log('Player 1 uploaded image:', uploadedImage.substring(0, 50) + '...')
+      }
+      
+      // If Player 1 chose to generate, we'll use the initial prompt
+      if (gameCreationMode === 'generate' && initialPrompt) {
+        console.log('Player 1 initial prompt:', initialPrompt)
+      }
+      
       setGame(gameWithMode)
       setCurrentPlayerId(creator.id)
       setPlayers([creator])

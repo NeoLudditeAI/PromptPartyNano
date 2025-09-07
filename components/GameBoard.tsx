@@ -6,6 +6,7 @@ import { Game, PlayerId, User, ImageGenerationResult } from '../types'
 import PromptDisplay from './PromptDisplay'
 import ImageDisplay from './ImageDisplay'
 import TurnInput from './TurnInput'
+import EditTurnInput from './EditTurnInput'
 import PlayerIndicator from './PlayerIndicator'
 import TurnNotification from './TurnNotification'
 import ReactionNotification from './ReactionNotification'
@@ -152,16 +153,37 @@ export default function GameBoard({
       // Set generating state for all players
       await setGenerating(game.id)
       
-      // Generate image from the new prompt
-      const { buildFullPrompt } = await import('../lib/game')
-      const fullPrompt = buildFullPrompt(updatedGame.turns)
-      
-      // Generate and store the image
-      await generateImageForGame(
-        updatedGame.id,
-        fullPrompt,
-        async () => {} // Empty callback since Firebase handles the update
-      )
+      if (game.gameMode === 'edit') {
+        // Edit mode: Handle differently based on turn number
+        if (updatedGame.turns.length === 1) {
+          // First turn in edit mode: Generate initial image from prompt
+          await generateImageForGame(
+            updatedGame.id,
+            text, // Use the text directly as the prompt for initial image
+            async () => {} // Empty callback since Firebase handles the update
+          )
+        } else {
+          // Subsequent turns: Send edit command to Nano Banana
+          // For now, we'll use the text as an edit command
+          // TODO: Implement proper edit command processing
+          await generateImageForGame(
+            updatedGame.id,
+            text, // This will be the edit command
+            async () => {} // Empty callback since Firebase handles the update
+          )
+        }
+      } else {
+        // Regular mode: Generate image from the full prompt
+        const { buildFullPrompt } = await import('../lib/game')
+        const fullPrompt = buildFullPrompt(updatedGame.turns)
+        
+        // Generate and store the image
+        await generateImageForGame(
+          updatedGame.id,
+          fullPrompt,
+          async () => {} // Empty callback since Firebase handles the update
+        )
+      }
       
       // Clear generating state
       await clearGenerating(game.id)
@@ -223,12 +245,24 @@ export default function GameBoard({
           <PromptDisplay game={game} players={players} />
           
           {!isGameComplete && (
-            <TurnInput 
-              onSubmit={handleTurnSubmit}
-              isSubmitting={isSubmitting}
-              currentPlayerId={currentPlayerId}
-              players={players}
-            />
+            <>
+              {game.gameMode === 'edit' ? (
+                <EditTurnInput 
+                  onSubmit={handleTurnSubmit}
+                  isSubmitting={isSubmitting}
+                  currentPlayerId={currentPlayerId}
+                  players={players}
+                  isFirstTurn={game.turns.length === 0}
+                />
+              ) : (
+                <TurnInput 
+                  onSubmit={handleTurnSubmit}
+                  isSubmitting={isSubmitting}
+                  currentPlayerId={currentPlayerId}
+                  players={players}
+                />
+              )}
+            </>
           )}
           
           {isGameComplete && (
