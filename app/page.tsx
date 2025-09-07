@@ -27,6 +27,7 @@ function HomePageContent() {
   const [gameCreationMode, setGameCreationMode] = useState<'upload' | 'generate'>('generate')
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
   const [initialPrompt, setInitialPrompt] = useState('')
+  const [isGeneratingSeed, setIsGeneratingSeed] = useState(false)
 
   // Handle direct lobby links - check for game ID in URL
   useEffect(() => {
@@ -197,6 +198,7 @@ function HomePageContent() {
       } else if (gameCreationMode === 'generate' && initialPrompt) {
         // Generate seed image from prompt
         try {
+          setIsGeneratingSeed(true)
           const { generateImageForGame } = await import('../lib/image')
           console.log('Generating seed image from prompt:', initialPrompt)
           
@@ -215,6 +217,8 @@ function HomePageContent() {
           console.error('Error generating seed image:', error)
           alert('Error generating initial image. Please try again.')
           return
+        } finally {
+          setIsGeneratingSeed(false)
         }
       }
       
@@ -336,6 +340,7 @@ function HomePageContent() {
     setGameCreationMode('generate')
     setUploadedImage(null)
     setInitialPrompt('')
+    setIsGeneratingSeed(false)
     
     // Handle Firebase cleanup in the background
     if (game && currentPlayerId && game.id) {
@@ -678,9 +683,14 @@ function HomePageContent() {
                 <div className="flex space-x-3">
                   <button
                     onClick={createGame}
-                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition-colors shadow-sm"
+                    disabled={isGeneratingSeed}
+                    className={`flex-1 py-2 px-4 rounded transition-colors shadow-sm ${
+                      isGeneratingSeed 
+                        ? 'bg-gray-400 text-gray-200 cursor-not-allowed' 
+                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                    }`}
                   >
-                    Create Game
+                    {isGeneratingSeed ? 'Generating...' : 'Create Game'}
                   </button>
                   <button
                     onClick={() => setGameMode('menu')}
@@ -740,6 +750,17 @@ function HomePageContent() {
             )}
           </div>
         </div>
+        
+        {/* Seed Image Generation Loading Overlay */}
+        {isGeneratingSeed && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
+            <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full text-center">
+              <div className="animate-spin h-8 w-8 border-2 border-gray-300 border-t-blue-600 rounded-full mx-auto mb-4" />
+              <h3 className="text-lg font-semibold text-gray-900 mb-2">Generating seed image...</h3>
+              <p className="text-sm text-gray-600">Creating your starting image, please wait...</p>
+            </div>
+          </div>
+        )}
       </div>
     )
   }
