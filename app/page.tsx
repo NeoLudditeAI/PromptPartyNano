@@ -168,25 +168,62 @@ function HomePageContent() {
         displayName: creatorName.trim()
       }
       
+      // Create the game first
       const newGame = await createSoloGame(creator)
       
-      // Set game mode based on creation choice
+      // Create seed image based on creation mode
+      let seedImage: string | null = null
+      let seedImagePrompt: string | null = null
+      
+      if (gameCreationMode === 'upload' && uploadedImage) {
+        // Use uploaded image as seed
+        seedImage = uploadedImage
+        seedImagePrompt = 'Uploaded image'
+        console.log('Using uploaded image as seed:', uploadedImage.substring(0, 50) + '...')
+        
+        // Store the uploaded image in the game's image history
+        try {
+          const { storeSeedImageInGame } = await import('../lib/image')
+          await storeSeedImageInGame(
+            newGame.id,
+            uploadedImage,
+            'Uploaded image',
+            async () => {} // Empty callback since Firebase handles the update
+          )
+        } catch (error) {
+          console.error('Error storing uploaded seed image:', error)
+          // Continue anyway - the image is still stored in game state
+        }
+      } else if (gameCreationMode === 'generate' && initialPrompt) {
+        // Generate seed image from prompt
+        try {
+          const { generateImageForGame } = await import('../lib/image')
+          console.log('Generating seed image from prompt:', initialPrompt)
+          
+          // Generate the seed image
+          const imageResult = await generateImageForGame(
+            newGame.id,
+            initialPrompt,
+            async () => {} // Empty callback since Firebase handles the update
+          )
+          
+          // Store the generated image as seed
+          seedImage = imageResult.imageUrl
+          seedImagePrompt = initialPrompt
+          console.log('Seed image generated:', imageResult.imageUrl.substring(0, 50) + '...')
+        } catch (error) {
+          console.error('Error generating seed image:', error)
+          alert('Error generating initial image. Please try again.')
+          return
+        }
+      }
+      
+      // Set game mode and seed image data
       const gameWithMode = {
         ...newGame,
-        gameMode: 'edit' as const
-      }
-      
-      // If Player 1 uploaded an image, we need to store it and use it for the first turn
-      if (gameCreationMode === 'upload' && uploadedImage) {
-        // Store the uploaded image in the game state
-        // For now, we'll store it in a way that can be accessed by the first turn
-        // TODO: Implement proper image storage and retrieval
-        console.log('Player 1 uploaded image:', uploadedImage.substring(0, 50) + '...')
-      }
-      
-      // If Player 1 chose to generate, we'll use the initial prompt
-      if (gameCreationMode === 'generate' && initialPrompt) {
-        console.log('Player 1 initial prompt:', initialPrompt)
+        gameMode: 'edit' as const,
+        seedImage: seedImage || undefined,
+        seedImagePrompt: seedImagePrompt || undefined
       }
       
       setGame(gameWithMode)
@@ -418,12 +455,41 @@ function HomePageContent() {
           </div>
         </div>
 
+        {/* Seed Image Display */}
+        {game.seedImage && (
+          <div className="mb-4">
+            <h3 className="font-semibold mb-2 text-gray-900">Starting Image</h3>
+            <div className="text-center">
+              <img 
+                src={game.seedImage} 
+                alt="Seed image" 
+                className="mx-auto max-h-48 rounded-lg shadow-sm border border-gray-200"
+              />
+              {game.seedImagePrompt && (
+                <p className="text-xs text-gray-500 mt-2">
+                  {game.seedImagePrompt === 'Uploaded image' ? 'Uploaded by creator' : `"${game.seedImagePrompt}"`}
+                </p>
+              )}
+            </div>
+          </div>
+        )}
+
         <div className="mb-4">
           <h3 className="font-semibold mb-2 text-gray-900">How to Play</h3>
           <div className="text-sm text-gray-600 space-y-1">
-            <p>• Each player adds to the prompt in turn</p>
-            <p>• The AI generates an image from your collective story</p>
-            <p>• Game ends when everyone has contributed</p>
+            {game.gameMode === 'edit' ? (
+              <>
+                <p>• Each player submits edit commands to modify the image</p>
+                <p>• Commands like "make the sky blue" or "add a hat"</p>
+                <p>• Game ends when everyone has contributed</p>
+              </>
+            ) : (
+              <>
+                <p>• Each player adds to the prompt in turn</p>
+                <p>• The AI generates an image from your collective story</p>
+                <p>• Game ends when everyone has contributed</p>
+              </>
+            )}
           </div>
         </div>
 
@@ -440,7 +506,11 @@ function HomePageContent() {
           </div>
         ) : (
           <div className="text-center text-gray-500">
-            Waiting for creator to start the game...
+            {game.gameMode === 'edit' ? (
+              <>Player 1 created the seed image. Waiting for Player 2 to start editing...</>
+            ) : (
+              <>Waiting for creator to start the game...</>
+            )}
           </div>
         )}
 

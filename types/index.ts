@@ -112,6 +112,8 @@ export interface Game {
   
   // Edit mode support (backward compatible)
   gameMode?: 'prompt' | 'edit';      // Defaults to 'prompt' for existing games
+  seedImage?: string;                // Base64 data URL of the initial seed image
+  seedImagePrompt?: string;          // Prompt used to generate the seed image
 }
 
 // --- User Structure ---

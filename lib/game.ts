@@ -49,10 +49,14 @@ export function startGame(game: Game): Game {
     throw new Error(`Need at least ${game.minPlayers} players to start`)
   }
   
+  // For edit mode, Player 1 already created the seed, so Player 2 starts
+  // For regular mode, Player 1 starts as usual
+  const startingPlayerIndex = game.gameMode === 'edit' ? 1 : 0
+  
   return {
     ...game,
     status: 'in_progress',
-    currentPlayerIndex: 0
+    currentPlayerIndex: startingPlayerIndex
   }
 }
 

@@ -139,3 +139,27 @@ export async function generateImageForGame(
   
   return imageResult
 }
+
+// Store a seed image in the game's image history
+export async function storeSeedImageInGame(
+  gameId: string,
+  imageUrl: string,
+  prompt: string,
+  updateGameFunction: (gameId: string, updates: any) => Promise<void>
+): Promise<ImageGenerationResult> {
+  const seedImageResult: ImageGenerationResult = {
+    id: `seed-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    imageUrl: imageUrl,
+    prompt: prompt,
+    timestamp: Date.now(),
+    reactions: {},
+    reactionUsers: {},
+    turnType: 'seed',
+    sourceImageUrl: undefined // This is the original seed
+  }
+  
+  // Update the game with the seed image
+  await updateGameWithImage(gameId, seedImageResult, updateGameFunction)
+  
+  return seedImageResult
+}

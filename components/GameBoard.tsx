@@ -154,24 +154,14 @@ export default function GameBoard({
       await setGenerating(game.id)
       
       if (game.gameMode === 'edit') {
-        // Edit mode: Handle differently based on turn number
-        if (updatedGame.turns.length === 1) {
-          // First turn in edit mode: Generate initial image from prompt
-          await generateImageForGame(
-            updatedGame.id,
-            text, // Use the text directly as the prompt for initial image
-            async () => {} // Empty callback since Firebase handles the update
-          )
-        } else {
-          // Subsequent turns: Send edit command to Nano Banana
-          // For now, we'll use the text as an edit command
-          // TODO: Implement proper edit command processing
-          await generateImageForGame(
-            updatedGame.id,
-            text, // This will be the edit command
-            async () => {} // Empty callback since Firebase handles the update
-          )
-        }
+        // Edit mode: All turns are edit commands
+        // The seed image should already be in imageHistory[0] from game creation
+        // Send edit command with the previous image to Nano Banana
+        await generateImageForGame(
+          updatedGame.id,
+          text, // This is the edit command
+          async () => {} // Empty callback since Firebase handles the update
+        )
       } else {
         // Regular mode: Generate image from the full prompt
         const { buildFullPrompt } = await import('../lib/game')
