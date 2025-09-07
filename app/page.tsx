@@ -506,7 +506,7 @@ function HomePageContent() {
           </div>
         ) : (
           <div className="text-center text-gray-500">
-            Starting image ready! Waiting for Player 2 to make the first edit...
+            Starting image ready! Waiting for {players[0]?.displayName || 'Player 1'} to start the game...
           </div>
         )}
 
