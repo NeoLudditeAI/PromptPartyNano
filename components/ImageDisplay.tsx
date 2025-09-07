@@ -131,8 +131,8 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
       return { reactions: { '❤️': 0, '😍': 0, '🎨': 0 }, userHasReacted: { '❤️': false, '😍': false, '🎨': false } }
     }
     
-    const reactions = currentImage.reactions || {}
-    const reactionUsers = currentImage.reactionUsers || {}
+    const reactions = currentImage.reactions || {} as Record<string, number>
+    const reactionUsers = currentImage.reactionUsers || {} as Record<string, string[]>
     
     return {
       reactions: {
