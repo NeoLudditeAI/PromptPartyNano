@@ -13,6 +13,7 @@ We follow a strict incremental approach to avoid rabbit holes and complex debugg
 - **Test After Each Change**: Verify functionality before proceeding to the next step
 - **Maintain Identical Structure**: Keep 100% feature parity with original PromptParty
 - **Avoid Feature Creep**: Focus only on the API switch, no additional features until basic functionality is proven
+- **Game Flow Validation**: Test each step of the corrected game flow before proceeding
 
 ### **Quality Assurance Principles**
 - **Comprehensive Testing**: Each change must be tested before moving forward
@@ -31,6 +32,24 @@ We follow a strict incremental approach to avoid rabbit holes and complex debugg
 - ✅ **Working API Integration**: Nano Banana generates images successfully
 - ✅ **No Regressions**: All existing features continue to work
 - ✅ **Clean Codebase**: Maintainable, well-documented code
+
+### **Corrected Game Flow & Testing Strategy** 🎯
+**New Game Mechanics**: Player 1 creates seed image BEFORE game starts, then Player 2 gets first turn
+
+**Testing Approach**:
+1. **Pre-Game Phase**: Test seed creation (upload + generate) before game starts
+2. **Lobby Phase**: Test seed image display and "waiting for Player 2" messaging
+3. **Gameplay Phase**: Test Player 2's first edit turn and subsequent turns
+4. **Image Consistency**: Test that edits maintain subject identity across turns
+5. **Turn Flow**: Verify correct turn progression (Player 2 → Player 3 → Player 1 → etc.)
+
+**Incremental Testing Steps**:
+- [ ] Test seed image creation (upload path)
+- [ ] Test seed image creation (generate path)  
+- [ ] Test lobby display with seed image
+- [ ] Test Player 2's first turn submission
+- [ ] Test edit command processing with Nano Banana
+- [ ] Test complete game flow end-to-end
 
 ---
 
@@ -98,17 +117,24 @@ We follow a strict incremental approach to avoid rabbit holes and complex debugg
 - [✅] **Comprehensive Testing** - 15+ tests for edit mode functionality
 - [✅] **Type Safety Validation** - Full TypeScript support
 
-### Player 1 Image Upload System (Next Priority)
-- [ ] **Update game creation UI** - Two options: "Upload Image" or "Generate Image"
-- [ ] **Mobile-friendly image upload** - HTML5 file input with drag-and-drop
-- [ ] **Base64 data URL storage** - Simple storage for uploaded images
-- [ ] **Game state management** - Support seedImage and gameMode properties
+### **CORRECTED GAME FLOW** 🎯
+**New Understanding**: Player 1 creates seed image BEFORE game starts, then Player 2 gets first turn
+- **Turn 0**: Player 1 creates seed (upload OR generate) - happens during game creation
+- **Turn 1**: Player 2 submits first edit command
+- **Turn 2+**: Subsequent players submit edit commands
+- **Image History**: `imageHistory[0] = seed`, `imageHistory[1] = first edit`, etc.
 
-### Edit Command System (Next Priority)
+### **IMMEDIATE PRIORITY: Pre-Game Seed Creation** 🚀
+- [ ] **Update game creation flow** - Player 1 must create seed before game starts
+- [ ] **Seed image storage** - Store initial image in game state (base64 or URL)
+- [ ] **Lobby display** - Show seed image with "Player 1 created seed, waiting for Player 2"
+- [ ] **Turn flow correction** - Game starts with Player 2's turn, not Player 1
+
+### **NEXT: Edit Command System** 
 - [ ] **Edit turn submission** - Replace prompt building with edit commands
 - [ ] **Pass-through processing** - Send commands directly to Nano Banana
 - [ ] **Character limit validation** - ≤25 character edit commands
-- [ ] **Turn flow updates** - Support edit mode turn progression
+- [ ] **Image consistency** - Send previous image + edit command to Nano Banana
 
 ## 🎨 **Phase 2B: Nano Banana Features** [planned]
 

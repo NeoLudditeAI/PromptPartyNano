@@ -3660,6 +3660,39 @@ Previous attempts failed because they tried to implement too many features simul
 - ✅ **Type Safety**: Full TypeScript support with proper validation
 - ✅ **Scalable Design**: Ready for future edit mode features
 
+---
+
+## 2025-01-09 - Game Flow Correction & Implementation Planning ✅
+
+**Time:** 2:30 PM
+
+**Critical Game Flow Correction:**
+- ✅ **Player 1 Seed Creation**: Must happen BEFORE game starts (not during first turn)
+- ✅ **Turn 0 = Seed Creation**: Player 1's "turn" is creating the initial image
+- ✅ **Turn 1 = Player 2's First Edit**: Game starts with Player 2, not Player 1
+- ✅ **Image History Structure**: `imageHistory[0] = seed`, `imageHistory[1] = first edit`
+
+**Implementation Strategy:**
+- ✅ **Pre-Game Phase**: Player 1 uploads image OR generates from prompt before game starts
+- ✅ **Lobby Display**: Show seed image with "Player 1 created seed, waiting for Player 2"
+- ✅ **Turn Flow**: Game starts with Player 2's turn, then normal rotation
+- ✅ **Incremental Testing**: Test each phase separately before combining
+
+**Next Steps Prioritized:**
+1. **Seed Creation UI**: Update game creation to require seed before starting
+2. **Lobby Enhancement**: Display seed image and correct messaging
+3. **Turn Flow Fix**: Ensure Player 2 gets first turn after game starts
+4. **Edit Command Processing**: Send previous image + edit command to Nano Banana
+5. **End-to-End Testing**: Complete game flow validation
+
+**Testing Approach:**
+- [ ] Test seed image creation (upload path)
+- [ ] Test seed image creation (generate path)  
+- [ ] Test lobby display with seed image
+- [ ] Test Player 2's first turn submission
+- [ ] Test edit command processing with Nano Banana
+- [ ] Test complete game flow end-to-end
+
 **Ready for UX Testing:**
 - ✅ **Foundation Complete**: Types and tests in place for edit mode
 - ✅ **Next Phase**: Player 1 image upload UI implementation
