@@ -22,6 +22,11 @@ function HomePageContent() {
   const [joinPlayerName, setJoinPlayerName] = useState('')
   const [sessionId] = useState(generateSessionId())
   const [isAutoJoining, setIsAutoJoining] = useState(false)
+  
+  // Edit mode state
+  const [gameCreationMode, setGameCreationMode] = useState<'upload' | 'generate'>('generate')
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null)
+  const [initialPrompt, setInitialPrompt] = useState('')
 
   // Handle direct lobby links - check for game ID in URL
   useEffect(() => {
@@ -114,9 +119,45 @@ function HomePageContent() {
     }
   }, [game?.id])
 
+  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (!file) return
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      alert('Please select an image file')
+      return
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image must be smaller than 5MB')
+      return
+    }
+
+    // Convert to base64 data URL
+    const reader = new FileReader()
+    reader.onload = (e) => {
+      const result = e.target?.result as string
+      setUploadedImage(result)
+    }
+    reader.readAsDataURL(file)
+  }
+
   const createGame = async () => {
     if (!creatorName.trim()) {
       alert('Please enter your name')
+      return
+    }
+
+    // Validate based on creation mode
+    if (gameCreationMode === 'upload' && !uploadedImage) {
+      alert('Please upload an image to start the game')
+      return
+    }
+
+    if (gameCreationMode === 'generate' && !initialPrompt.trim()) {
+      alert('Please enter a prompt to generate the initial image')
       return
     }
 
@@ -128,7 +169,14 @@ function HomePageContent() {
       }
       
       const newGame = await createSoloGame(creator)
-      setGame(newGame)
+      
+      // Set game mode based on creation choice
+      const gameWithMode = {
+        ...newGame,
+        gameMode: 'edit' as const
+      }
+      
+      setGame(gameWithMode)
       setCurrentPlayerId(creator.id)
       setPlayers([creator])
       
@@ -229,6 +277,11 @@ function HomePageContent() {
     setCreatorName('')
     setJoinGameId('')
     setJoinPlayerName('')
+    
+    // Reset edit mode state
+    setGameCreationMode('generate')
+    setUploadedImage(null)
+    setInitialPrompt('')
     
     // Handle Firebase cleanup in the background
     if (game && currentPlayerId && game.id) {
@@ -440,6 +493,101 @@ function HomePageContent() {
                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
+
+                {/* Game Creation Mode Selection */}
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-3">
+                    How would you like to start the game?
+                  </label>
+                  <div className="grid grid-cols-2 gap-3">
+                    <button
+                      onClick={() => setGameCreationMode('upload')}
+                      className={`p-3 rounded-lg border-2 transition-colors ${
+                        gameCreationMode === 'upload'
+                          ? 'border-blue-500 bg-blue-50 text-blue-700'
+                          : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                      }`}
+                    >
+                      <div className="text-center">
+                        <div className="text-2xl mb-1">📷</div>
+                        <div className="text-sm font-medium">Upload Image</div>
+                        <div className="text-xs text-gray-500">Use your own photo</div>
+                      </div>
+                    </button>
+                    <button
+                      onClick={() => setGameCreationMode('generate')}
+                      className={`p-3 rounded-lg border-2 transition-colors ${
+                        gameCreationMode === 'generate'
+                          ? 'border-blue-500 bg-blue-50 text-blue-700'
+                          : 'border-gray-300 bg-white text-gray-700 hover:border-gray-400'
+                      }`}
+                    >
+                      <div className="text-center">
+                        <div className="text-2xl mb-1">🎨</div>
+                        <div className="text-sm font-medium">Generate Image</div>
+                        <div className="text-xs text-gray-500">Create with AI</div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Upload Image Option */}
+                {gameCreationMode === 'upload' && (
+                  <div>
+                    <label htmlFor="image-upload" className="block text-sm font-medium text-gray-700 mb-2">
+                      Upload Image
+                    </label>
+                    <div className="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center hover:border-gray-400 transition-colors">
+                      <input
+                        id="image-upload"
+                        type="file"
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                      <label htmlFor="image-upload" className="cursor-pointer">
+                        {uploadedImage ? (
+                          <div>
+                            <img 
+                              src={uploadedImage} 
+                              alt="Uploaded preview" 
+                              className="mx-auto max-h-32 rounded-lg shadow-sm"
+                            />
+                            <p className="mt-2 text-sm text-green-600">✓ Image uploaded successfully</p>
+                          </div>
+                        ) : (
+                          <div>
+                            <div className="text-4xl text-gray-400 mb-2">📷</div>
+                            <p className="text-gray-600">Click to upload an image</p>
+                            <p className="text-xs text-gray-500 mt-1">Max 5MB, JPG/PNG/GIF</p>
+                          </div>
+                        )}
+                      </label>
+                    </div>
+                  </div>
+                )}
+
+                {/* Generate Image Option */}
+                {gameCreationMode === 'generate' && (
+                  <div>
+                    <label htmlFor="initial-prompt" className="block text-sm font-medium text-gray-700 mb-2">
+                      Initial Image Prompt
+                    </label>
+                    <textarea
+                      id="initial-prompt"
+                      name="initialPrompt"
+                      value={initialPrompt}
+                      onChange={(e) => setInitialPrompt(e.target.value)}
+                      placeholder="Describe the image you want to create... (e.g., 'A majestic mountain landscape at sunset with a lake in the foreground')"
+                      rows={3}
+                      className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    />
+                    <p className="text-xs text-gray-500 mt-1">
+                      This will be used to generate the initial image that other players will edit.
+                    </p>
+                  </div>
+                )}
+
                 <div className="flex space-x-3">
                   <button
                     onClick={createGame}
