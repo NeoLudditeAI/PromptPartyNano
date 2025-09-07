@@ -226,6 +226,10 @@ function HomePageContent() {
         seedImagePrompt: seedImagePrompt || undefined
       }
       
+      // Update the game in Firebase with the seed image data
+      const { updateGameInFirebase } = await import('../lib/firebase')
+      await updateGameInFirebase(gameWithMode)
+      
       setGame(gameWithMode)
       setCurrentPlayerId(creator.id)
       setPlayers([creator])

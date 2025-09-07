@@ -26,7 +26,12 @@ function cleanGameFromFirebase(gameData: any): Game {
     minPlayers: gameData.minPlayers || 2,
     maxPlayers: gameData.maxPlayers || 6,
     config: gameData.config || { TURNS_PER_GAME: 6, MIN_PLAYERS: 2, MAX_PLAYERS: 6, MAX_TURN_LENGTH: 25, MAX_TOTAL_LENGTH: 1000, WARNING_THRESHOLD: 20, AUTO_START_ON_FULL: false, ALLOW_MID_GAME_JOINS: false, GENERATE_IMAGE_EVERY_TURN: true, IMAGE_HISTORY_ENABLED: true, SESSION_TIMEOUT_MS: 30 * 60 * 1000, MAX_SESSIONS_PER_PLAYER: 1, DEBOUNCE_DELAY_MS: 500, MAX_CONCURRENT_UPDATES: 3 },
-    isGenerating: gameData.isGenerating || false // Handle generation state
+    isGenerating: gameData.isGenerating || false, // Handle generation state
+    
+    // Edit mode support (backward compatible)
+    gameMode: gameData.gameMode || 'prompt',
+    seedImage: gameData.seedImage || undefined,
+    seedImagePrompt: gameData.seedImagePrompt || undefined
   }
 }
 
