@@ -45,8 +45,57 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [currentImageIndex, imageCount])
 
-  // If no images, show empty state
+  // If no images in history, show seed image or empty state
   if (imageCount === 0) {
+    // Check if we have a seed image to show
+    if (game.seedImage) {
+      return (
+        <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold text-gray-900">
+              🎨 Starting Image
+            </h3>
+          </div>
+          
+          <div className="space-y-4">
+            {/* Seed Image */}
+            <div className="relative">
+              <img
+                src={game.seedImage}
+                alt="Starting image"
+                className="w-full h-64 object-cover rounded-lg border-2 border-gray-200 shadow-sm"
+              />
+              
+              {/* Seed Badge */}
+              <div className="absolute top-2 right-2 bg-green-600 text-white px-3 py-1 rounded-full text-xs font-medium">
+                Starting Image
+              </div>
+            </div>
+            
+            {/* Image Info */}
+            <div className="text-center">
+              <p className="text-sm text-gray-600">
+                {game.seedImagePrompt === 'Uploaded image' 
+                  ? 'Uploaded by game creator' 
+                  : `Created from: "${game.seedImagePrompt}"`
+                }
+              </p>
+              <p className="text-xs text-gray-500 mt-1">
+                Ready for editing!
+              </p>
+            </div>
+          </div>
+          
+          {/* Image Info */}
+          <div className="mt-4 text-sm text-gray-600">
+            <p>Players will edit this image with their commands</p>
+            <p>Each turn creates a new version based on the previous image</p>
+          </div>
+        </div>
+      )
+    }
+    
+    // No seed image - show empty state
     return (
       <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
         <div className="flex items-center justify-between mb-4">
@@ -65,7 +114,7 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
         
         {/* Image Info */}
         <div className="mt-4 text-sm text-gray-600">
-          <p>Images are generated using DALL·E 3 AI</p>
+          <p>Images are generated using Google Gemini 2.5 Flash Image Preview</p>
           <p>Each turn creates a new image from the full prompt</p>
         </div>
       </div>
@@ -297,8 +346,12 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
       
       {/* Image Info */}
       <div className="mt-4 text-sm text-gray-600">
-        <p>Images are generated using DALL·E 3 AI</p>
-        <p>Each turn creates a new image from the full prompt</p>
+        <p>Images are generated using Google Gemini 2.5 Flash Image Preview</p>
+        {game.gameMode === 'edit' ? (
+          <p>Each turn edits the previous image based on player commands</p>
+        ) : (
+          <p>Each turn creates a new image from the full prompt</p>
+        )}
         {imageCount > 1 && (
           <p className="text-blue-600 font-medium mt-1">
             Use the arrows, keyboard (← →), or thumbnails to browse all {imageCount} generated images
