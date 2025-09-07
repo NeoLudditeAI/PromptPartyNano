@@ -155,10 +155,15 @@ export default function GameBoard({
       // All games are edit mode: All turns are edit commands
       // The seed image should already be in imageHistory[0] from game creation
       // Send edit command with the previous image to Nano Banana
+      const previousImage = game.imageHistory.length > 0 
+        ? game.imageHistory[game.imageHistory.length - 1].imageUrl
+        : game.seedImage || undefined
+      
       await generateImageForGame(
         updatedGame.id,
         text, // This is the edit command
-        async () => {} // Empty callback since Firebase handles the update
+        async () => {}, // Empty callback since Firebase handles the update
+        previousImage // Pass the previous image for editing
       )
       
       // Clear generating state

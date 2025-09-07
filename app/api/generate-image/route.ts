@@ -4,7 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 
 export async function POST(request: NextRequest) {
   try {
-    const { prompt } = await request.json()
+    const { prompt, sourceImage } = await request.json()
     
     if (!prompt || typeof prompt !== 'string') {
       return NextResponse.json(
@@ -20,12 +20,13 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const response = await generateImageWithGemini(prompt.trim())
+    const response = await generateImageWithGemini(prompt.trim(), sourceImage)
 
     return NextResponse.json({
       success: true,
       imageUrl: response.imageUrl,
       prompt: prompt.trim(),
+      sourceImageUrl: sourceImage || undefined,
       createdAt: Date.now()
     })
 
@@ -47,7 +48,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Real Nano Banana (Gemini 2.5 Flash Image Preview) API call for image generation
-async function generateImageWithGemini(prompt: string): Promise<{ imageUrl: string }> {
+async function generateImageWithGemini(prompt: string, sourceImage?: string): Promise<{ imageUrl: string }> {
   const apiKey = process.env.GEMINI_API_KEY
   if (!apiKey) {
     throw new Error('GEMINI_API_KEY is not configured')
@@ -64,8 +65,28 @@ async function generateImageWithGemini(prompt: string): Promise<{ imageUrl: stri
     })
     
     // Generate image using Nano Banana
-    // The model supports text-to-image generation with advanced features
-    const result = await model.generateContent(prompt)
+    // Support both text-to-image and image editing based on sourceImage parameter
+    let result
+    
+    if (sourceImage) {
+      // Image editing: text + image to image
+      const imageData = sourceImage.replace(/^data:image\/[a-z]+;base64,/, '')
+      const mimeType = sourceImage.match(/^data:image\/([a-z]+);base64,/)?.[1] || 'png'
+      
+      result = await model.generateContent([
+        { text: prompt },
+        {
+          inlineData: {
+            mimeType: `image/${mimeType}`,
+            data: imageData
+          }
+        }
+      ])
+    } else {
+      // Text-to-image generation
+      result = await model.generateContent(prompt)
+    }
+    
     const response = await result.response
     
     console.log('Nano Banana API Response:', {

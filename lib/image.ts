@@ -21,6 +21,7 @@ const defaultConfig: GeminiConfig = {
 // Main image generation function (client-side)
 export async function generateImageFromPrompt(
   prompt: string, 
+  sourceImage?: string,
   config: Partial<GeminiConfig> = {}
 ): Promise<ImageGenerationResult> {
   if (!prompt.trim()) {
@@ -34,7 +35,10 @@ export async function generateImageFromPrompt(
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ prompt: prompt.trim() }),
+      body: JSON.stringify({ 
+        prompt: prompt.trim(),
+        sourceImage: sourceImage || undefined
+      }),
     })
 
     if (!response.ok) {
@@ -129,10 +133,11 @@ export async function updateGameWithImage(
 export async function generateImageForGame(
   gameId: string,
   prompt: string,
-  updateGameFunction: (gameId: string, updates: any) => Promise<void>
+  updateGameFunction: (gameId: string, updates: any) => Promise<void>,
+  sourceImage?: string
 ): Promise<ImageGenerationResult> {
   // Generate the image using the raw prompt (no enhancements)
-  const imageResult = await generateImageFromPrompt(prompt)
+  const imageResult = await generateImageFromPrompt(prompt, sourceImage)
   
   // Update the game with the new image
   await updateGameWithImage(gameId, imageResult, updateGameFunction)
