@@ -16,6 +16,32 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
   const imageCount = getImageCount(game)
   const fullPrompt = buildFullPrompt(game.turns)
 
+  // Create a combined image list that includes seed image if it exists
+  const getAllImages = () => {
+    const images = []
+    
+    // Add seed image first if it exists and is not already in history
+    if (game.seedImage && (!game.imageHistory.length || game.imageHistory[0].imageUrl !== game.seedImage)) {
+      images.push({
+        id: 'seed-image',
+        imageUrl: game.seedImage,
+        prompt: game.seedImagePrompt || 'Starting image',
+        createdAt: Date.now(),
+        reactions: {},
+        reactionUsers: {},
+        isSeedImage: true
+      })
+    }
+    
+    // Add all images from history
+    images.push(...game.imageHistory)
+    
+    return images
+  }
+
+  const allImages = getAllImages()
+  const totalImageCount = allImages.length
+
   // Auto-show latest image when new images are added
   useEffect(() => {
     if (totalImageCount > 0) {
@@ -44,32 +70,6 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
     window.addEventListener('keydown', handleKeyDown)
     return () => window.removeEventListener('keydown', handleKeyDown)
   }, [currentImageIndex, totalImageCount])
-
-  // Create a combined image list that includes seed image if it exists
-  const getAllImages = () => {
-    const images = []
-    
-    // Add seed image first if it exists and is not already in history
-    if (game.seedImage && (!game.imageHistory.length || game.imageHistory[0].imageUrl !== game.seedImage)) {
-      images.push({
-        id: 'seed-image',
-        imageUrl: game.seedImage,
-        prompt: game.seedImagePrompt || 'Starting image',
-        createdAt: Date.now(),
-        reactions: {},
-        reactionUsers: {},
-        isSeedImage: true
-      })
-    }
-    
-    // Add all images from history
-    images.push(...game.imageHistory)
-    
-    return images
-  }
-
-  const allImages = getAllImages()
-  const totalImageCount = allImages.length
 
   // If no images at all, show empty state
   if (totalImageCount === 0) {
