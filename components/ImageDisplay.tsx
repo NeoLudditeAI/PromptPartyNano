@@ -28,8 +28,7 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
         prompt: game.seedImagePrompt || 'Starting image',
         createdAt: Date.now(),
         reactions: {},
-        reactionUsers: {},
-        isSeedImage: true
+        reactionUsers: {}
       })
     }
     
@@ -37,6 +36,11 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
     images.push(...game.imageHistory)
     
     return images
+  }
+
+  // Helper function to check if an image is the seed image
+  const isSeedImage = (image: any) => {
+    return image.id === 'seed-image' || image.imageUrl === game.seedImage
   }
 
   const allImages = getAllImages()
@@ -201,7 +205,7 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
           
           {/* Image Badge */}
           <div className="absolute top-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full text-xs font-medium">
-            {currentImage.isSeedImage ? 'Starting Image' : 'AI Generated'}
+            {isSeedImage(currentImage) ? 'Starting Image' : 'AI Generated'}
           </div>
           
           {/* Navigation Arrows - Only show if multiple images */}
@@ -271,12 +275,12 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
         {/* Image Info */}
         <div className="text-center">
           <p className="text-sm text-gray-600">
-            {currentImage.isSeedImage ? 'Starting image' : 'Generated from'}: <span className="text-gray-900 font-medium">
+            {isSeedImage(currentImage) ? 'Starting image' : 'Generated from'}: <span className="text-gray-900 font-medium">
               "{currentImage.prompt}"
             </span>
           </p>
           <p className="text-xs text-gray-500 mt-1">
-            {currentImage.isSeedImage ? 'Ready for editing!' : formatDate(currentImage.createdAt)}
+            {isSeedImage(currentImage) ? 'Ready for editing!' : formatDate(currentImage.createdAt)}
           </p>
         </div>
       </div>
