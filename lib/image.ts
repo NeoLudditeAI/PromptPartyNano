@@ -151,10 +151,10 @@ export async function storeSeedImageInGame(
     id: `seed-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
     imageUrl: imageUrl,
     prompt: prompt,
-    timestamp: Date.now(),
+    createdAt: Date.now(),
     reactions: {},
     reactionUsers: {},
-    turnType: 'seed',
+    editCommand: 'seed',
     sourceImageUrl: undefined // This is the original seed
   }
   
