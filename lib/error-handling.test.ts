@@ -1,6 +1,26 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
-import { Game, PlayerId, User } from '../types'
+import { Game, PlayerId, User, GameConfig } from '../types'
 import { createGame, addPlayerToGame, startGame, addTurn, getCurrentPlayer } from './game'
+
+// Helper function to create a default game config
+function createDefaultGameConfig(): GameConfig {
+  return {
+    TURNS_PER_GAME: 6,
+    MIN_PLAYERS: 2,
+    MAX_PLAYERS: 6,
+    MAX_TURN_LENGTH: 25,
+    MAX_TOTAL_LENGTH: 150,
+    WARNING_THRESHOLD: 20,
+    AUTO_START_ON_FULL: true,
+    ALLOW_MID_GAME_JOINS: false,
+    GENERATE_IMAGE_EVERY_TURN: true,
+    IMAGE_HISTORY_ENABLED: true,
+    SESSION_TIMEOUT_MS: 300000,
+    MAX_SESSIONS_PER_PLAYER: 3,
+    DEBOUNCE_DELAY_MS: 300,
+    MAX_CONCURRENT_UPDATES: 5
+  }
+}
 
 describe('Error Handling and Edge Cases', () => {
   describe('Game Creation Edge Cases', () => {
@@ -314,7 +334,8 @@ describe('Error Handling and Edge Cases', () => {
         currentPlayerIndex: 0,
         imageHistory: [],
         minPlayers: 2,
-        maxPlayers: 6
+        maxPlayers: 6,
+        config: createDefaultGameConfig()
       }
 
       // Act & Assert
@@ -341,7 +362,8 @@ describe('Error Handling and Edge Cases', () => {
         currentPlayerIndex: 0,
         imageHistory: [],
         minPlayers: 2,
-        maxPlayers: 6
+        maxPlayers: 6,
+        config: createDefaultGameConfig()
       }
 
       // Act & Assert
@@ -378,7 +400,8 @@ describe('Error Handling and Edge Cases', () => {
         currentPlayerIndex: 0,
         imageHistory: [],
         minPlayers: 2,
-        maxPlayers: 6
+        maxPlayers: 6,
+        config: createDefaultGameConfig()
       }
 
       // Act & Assert
@@ -398,7 +421,8 @@ describe('Error Handling and Edge Cases', () => {
         currentPlayerIndex: 999, // Invalid index
         imageHistory: [],
         minPlayers: 2,
-        maxPlayers: 6
+        maxPlayers: 6,
+        config: createDefaultGameConfig()
       }
 
       // Act & Assert
@@ -419,7 +443,8 @@ describe('Error Handling and Edge Cases', () => {
         currentPlayerIndex: 0,
         imageHistory: [],
         minPlayers: 2,
-        maxPlayers: 6
+        maxPlayers: 6,
+        config: createDefaultGameConfig()
       } as Game
 
       // Act & Assert
@@ -438,7 +463,8 @@ describe('Error Handling and Edge Cases', () => {
         currentPlayerIndex: 0,
         imageHistory: [],
         minPlayers: 2,
-        maxPlayers: 6
+        maxPlayers: 6,
+        config: createDefaultGameConfig()
       } as Game
 
       // Act & Assert
@@ -457,7 +483,8 @@ describe('Error Handling and Edge Cases', () => {
         currentPlayerIndex: -1, // Negative index
         imageHistory: [],
         minPlayers: 2,
-        maxPlayers: 6
+        maxPlayers: 6,
+        config: createDefaultGameConfig()
       }
 
       // Act & Assert

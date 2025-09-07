@@ -2,28 +2,26 @@
 
 import { ImageGenerationResult } from '../types'
 
-// OpenAI DALL·E API configuration
-interface DalleConfig {
+// Google Gemini API configuration
+interface GeminiConfig {
   apiKey: string
-  model: 'dall-e-3' | 'dall-e-2'
-  size: '1024x1024' | '1792x1024' | '1024x1792'
-  quality: 'standard' | 'hd'
-  style: 'vivid' | 'natural'
+  model: string
+  size: string
+  quality: string
 }
 
-// Default configuration for DALL·E 3
-const defaultConfig: DalleConfig = {
-  apiKey: process.env.OPENAI_API_KEY || '',
-  model: 'dall-e-3',
+// Default configuration for Gemini 2.5 Flash Image Preview
+const defaultConfig: GeminiConfig = {
+  apiKey: process.env.GEMINI_API_KEY || '',
+  model: 'gemini-2.5-flash-image-preview',
   size: '1024x1024',
-  quality: 'standard',
-  style: 'vivid'
+  quality: 'standard'
 }
 
 // Main image generation function (client-side)
 export async function generateImageFromPrompt(
   prompt: string, 
-  config: Partial<DalleConfig> = {}
+  config: Partial<GeminiConfig> = {}
 ): Promise<ImageGenerationResult> {
   if (!prompt.trim()) {
     throw new Error('Prompt cannot be empty')
@@ -62,13 +60,13 @@ export async function generateImageFromPrompt(
         throw new Error('Rate limit exceeded. Please wait a moment before trying again.')
       }
       if (error.message.includes('billing')) {
-        throw new Error('OpenAI billing issue. Please check your account.')
+        throw new Error('Gemini billing issue. Please check your account.')
       }
       if (error.message.includes('content policy')) {
-        throw new Error('Prompt violates OpenAI content policy. Please try different words.')
+        throw new Error('Prompt violates Gemini content policy. Please try different words.')
       }
       if (error.message.includes('API key')) {
-        throw new Error('OpenAI API key is not configured properly.')
+        throw new Error('Gemini API key is not configured properly.')
       }
       throw new Error(`Image generation failed: ${error.message}`)
     }
@@ -76,8 +74,8 @@ export async function generateImageFromPrompt(
   }
 }
 
-// Enhanced prompt builder for better DALL·E results
-export function enhancePromptForDalle(basePrompt: string): string {
+// Enhanced prompt builder for better Gemini results
+export function enhancePromptForGemini(basePrompt: string): string {
   const trimmedPrompt = basePrompt.trim()
   if (!trimmedPrompt) {
     return basePrompt
@@ -98,9 +96,9 @@ export function enhancePromptForDalle(basePrompt: string): string {
 // Generate image with enhanced prompt
 export async function generateEnhancedImage(
   basePrompt: string,
-  config: Partial<DalleConfig> = {}
+  config: Partial<GeminiConfig> = {}
 ): Promise<ImageGenerationResult> {
-  const enhancedPrompt = enhancePromptForDalle(basePrompt)
+  const enhancedPrompt = enhancePromptForGemini(basePrompt)
   return await generateImageFromPrompt(enhancedPrompt, config)
 }
 

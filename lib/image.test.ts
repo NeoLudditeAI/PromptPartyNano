@@ -2,7 +2,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { 
   generateImageFromPrompt,
-  enhancePromptForDalle,
+  enhancePromptForGemini,
   generateEnhancedImage,
   isValidImageUrl,
   updateGameWithImage,
@@ -81,7 +81,7 @@ describe('Image Generation', () => {
       } as Response)
 
       // Act & Assert
-      await expect(generateImageFromPrompt(prompt)).rejects.toThrow('OpenAI billing issue. Please check your account.')
+      await expect(generateImageFromPrompt(prompt)).rejects.toThrow('Gemini billing issue. Please check your account.')
     })
 
     it('should handle content policy violations', async () => {
@@ -94,7 +94,7 @@ describe('Image Generation', () => {
       } as Response)
 
       // Act & Assert
-      await expect(generateImageFromPrompt(prompt)).rejects.toThrow('Prompt violates OpenAI content policy. Please try different words.')
+      await expect(generateImageFromPrompt(prompt)).rejects.toThrow('Prompt violates Gemini content policy. Please try different words.')
     })
 
     it('should handle API key errors', async () => {
@@ -107,7 +107,7 @@ describe('Image Generation', () => {
       } as Response)
 
       // Act & Assert
-      await expect(generateImageFromPrompt(prompt)).rejects.toThrow('OpenAI API key is not configured properly.')
+      await expect(generateImageFromPrompt(prompt)).rejects.toThrow('Gemini API key is not configured properly.')
     })
 
     it('should handle invalid response', async () => {
@@ -123,13 +123,13 @@ describe('Image Generation', () => {
     })
   })
 
-  describe('enhancePromptForDalle', () => {
+  describe('enhancePromptForGemini', () => {
     it('should enhance prompt with style improvements', () => {
       // Arrange
       const basePrompt = 'a beautiful sunset'
 
       // Act
-      const enhanced = enhancePromptForDalle(basePrompt)
+      const enhanced = enhancePromptForGemini(basePrompt)
 
       // Assert
       expect(enhanced).toBe('a beautiful sunset, high quality, detailed, professional photography')
@@ -137,7 +137,7 @@ describe('Image Generation', () => {
 
     it('should return empty string for empty input', () => {
       // Act
-      const result = enhancePromptForDalle('')
+      const result = enhancePromptForGemini('')
 
       // Assert
       expect(result).toBe('')
@@ -145,7 +145,7 @@ describe('Image Generation', () => {
 
     it('should handle whitespace-only input', () => {
       // Act
-      const result = enhancePromptForDalle('   ')
+      const result = enhancePromptForGemini('   ')
 
       // Assert
       expect(result).toBe('   ')
@@ -156,7 +156,7 @@ describe('Image Generation', () => {
       const basePrompt = '  a beautiful sunset  '
 
       // Act
-      const enhanced = enhancePromptForDalle(basePrompt)
+      const enhanced = enhancePromptForGemini(basePrompt)
 
       // Assert
       expect(enhanced).toBe('a beautiful sunset, high quality, detailed, professional photography')

@@ -2,7 +2,27 @@
 // Integration tests for Firebase Cloud Messaging Functions
 
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest'
-import type { GameId, PlayerId, Game, PromptTurn } from '../types'
+import type { GameId, PlayerId, Game, PromptTurn, GameConfig } from '../types'
+
+// Helper function to create a default game config
+function createDefaultGameConfig(): GameConfig {
+  return {
+    TURNS_PER_GAME: 6,
+    MIN_PLAYERS: 2,
+    MAX_PLAYERS: 6,
+    MAX_TURN_LENGTH: 25,
+    MAX_TOTAL_LENGTH: 150,
+    WARNING_THRESHOLD: 20,
+    AUTO_START_ON_FULL: true,
+    ALLOW_MID_GAME_JOINS: false,
+    GENERATE_IMAGE_EVERY_TURN: true,
+    IMAGE_HISTORY_ENABLED: true,
+    SESSION_TIMEOUT_MS: 300000,
+    MAX_SESSIONS_PER_PLAYER: 3,
+    DEBOUNCE_DELAY_MS: 300,
+    MAX_CONCURRENT_UPDATES: 5
+  }
+}
 
 // Mock Firebase Admin SDK for testing
 const mockMessaging = {
@@ -26,22 +46,23 @@ vi.mock('firebase-admin', () => ({
 // Mock game data for testing
 const mockGame: Game = {
   id: 'game-123' as GameId,
+  creator: 'player-1' as PlayerId,
   players: ['player-1' as PlayerId, 'player-2' as PlayerId],
   createdAt: Date.now(),
-  turnLimit: 3,
+  status: 'in_progress',
+  currentPlayerIndex: 1,
+  imageHistory: [],
+  minPlayers: 2,
   maxPlayers: 4,
-  currentPrompt: 'A magical forest with sparkling trees',
+  config: createDefaultGameConfig(),
   turns: [
     {
-      id: 'turn-1',
-      playerId: 'player-1' as PlayerId,
+      userId: 'player-1' as PlayerId,
       text: 'A magical forest',
-      timestamp: Date.now() - 60000
-    } as PromptTurn
-  ],
-  currentPlayerIndex: 1,
-  isComplete: false,
-  latestImageUrl: 'https://example.com/image1.png'
+      timestamp: Date.now() - 60000,
+      characterCount: 15
+    }
+  ]
 }
 
 const mockPlayerTokens = {
@@ -115,22 +136,24 @@ describe('Firebase Functions Integration', () => {
 
     it('should format turn notification message correctly', () => {
       const expectedTitle = 'Your turn in Prompt Party!'
-      const expectedBody = `It's your turn to add to the prompt. Current: "${mockGame.currentPrompt}"`
+      const currentPrompt = mockGame.turns.map(turn => turn.text).join(' ')
+      const expectedBody = `It's your turn to add to the prompt. Current: "${currentPrompt}"`
       
       expect(expectedTitle).toBe('Your turn in Prompt Party!')
-      expect(expectedBody).toContain(mockGame.currentPrompt)
+      expect(expectedBody).toContain(currentPrompt)
       expect(expectedBody.length).toBeLessThan(200) // Firebase notification limit
     })
 
     it('should create proper FCM message payload for turn notification', () => {
       const fcmToken = 'test-fcm-token'
       const gameId = mockGame.id
+      const currentPrompt = mockGame.turns.map(turn => turn.text).join(' ')
       
       const expectedMessage = {
         token: fcmToken,
         notification: {
           title: 'Your turn in Prompt Party!',
-          body: `It's your turn to add to the prompt. Current: "${mockGame.currentPrompt}"`
+          body: `It's your turn to add to the prompt. Current: "${currentPrompt}"`
         },
         data: {
           gameId: gameId,
@@ -158,7 +181,7 @@ describe('Firebase Functions Integration', () => {
         playerId: 'player-1' as PlayerId // Same as turn creator
       }
       
-      const turnCreatorId = mockGame.turns[0].playerId
+      const turnCreatorId = mockGame.turns[0].userId
       const shouldNotify = reactionByImageCreator.playerId !== turnCreatorId
       
       expect(shouldNotify).toBe(false) // Should not notify self
@@ -170,7 +193,7 @@ describe('Firebase Functions Integration', () => {
         playerId: 'player-2' as PlayerId // Different from turn creator
       }
       
-      const turnCreatorId = mockGame.turns[0].playerId // player-1
+      const turnCreatorId = mockGame.turns[0].userId // player-1
       const shouldNotify = reactionByOtherPlayer.playerId !== turnCreatorId
       
       expect(shouldNotify).toBe(true) // Should notify
@@ -381,7 +404,7 @@ describe('Firebase Functions Integration', () => {
 
     it('should handle emoji in notification messages', () => {
       const emojiMessage = 'Alice ❤️ your contribution to the game.'
-      const hasEmoji = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/u.test(emojiMessage)
+      const hasEmoji = /[\u{1F600}-\u{1F64F}]|[\u{1F300}-\u{1F5FF}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]/.test(emojiMessage)
       
       expect(hasEmoji).toBe(true)
       expect(emojiMessage.length).toBeLessThan(200)

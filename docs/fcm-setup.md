@@ -41,8 +41,8 @@ From **Project Settings** > **General**, copy these values:
 ### 1. Update Your `.env.local` File
 
 ```bash
-# OpenAI API Configuration
-OPENAI_API_KEY=your_openai_api_key_here
+# Google Gemini API Configuration
+GEMINI_API_KEY=your_gemini_api_key_here
 
 # Firebase Configuration
 NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key_here
