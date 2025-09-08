@@ -6,6 +6,7 @@ import { Game, PlayerId } from '../types'
 import { getLatestImageUrl, getImageCount, buildFullPrompt } from '../lib/game'
 import CapabilityBadges from './CapabilityBadges'
 import { detectImageCapabilities } from '../types/badges'
+import { REACTION_EMOJIS, createEmptyReactions, createEmptyUserReactions, getReactionsFromImage, getUserReactionsFromImage } from '../lib/reaction-constants'
 
 interface ImageDisplayProps {
   game: Game
@@ -134,23 +135,15 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
     userHasReacted: Record<string, boolean>; 
   } => {
     if (!currentImage?.id) {
-      return { reactions: { '❤️': 0, '😍': 0, '🎨': 0 }, userHasReacted: { '❤️': false, '😍': false, '🎨': false } }
+      return { 
+        reactions: createEmptyReactions(), 
+        userHasReacted: createEmptyUserReactions() 
+      }
     }
     
-    const reactions = (currentImage.reactions || {}) as Record<string, number>
-    const reactionUsers = (currentImage.reactionUsers || {}) as Record<string, string[]>
-    
     return {
-      reactions: {
-        '❤️': (reactions as any)['❤️'] || 0,
-        '😍': (reactions as any)['😍'] || 0,
-        '🎨': (reactions as any)['🎨'] || 0
-      },
-      userHasReacted: {
-        '❤️': ((reactionUsers as any)['❤️'] || []).includes(currentPlayerId),
-        '😍': ((reactionUsers as any)['😍'] || []).includes(currentPlayerId),
-        '🎨': ((reactionUsers as any)['🎨'] || []).includes(currentPlayerId)
-      }
+      reactions: getReactionsFromImage(currentImage),
+      userHasReacted: getUserReactionsFromImage(currentImage, currentPlayerId)
     }
   }
 
@@ -246,7 +239,7 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
         {currentImage?.id && (
           <div className="flex justify-center">
             <div className="bg-sky-blue/10 rounded-full px-4 py-2 flex space-x-3 border border-sky-blue/30">
-              {['❤️', '😂', '🔥', '✨', '🎨'].map(emoji => {
+              {REACTION_EMOJIS.map(emoji => {
                 const hasReacted = userHasReacted[emoji]
                 const count = currentReactions[emoji]
                 

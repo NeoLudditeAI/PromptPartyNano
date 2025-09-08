@@ -9,6 +9,7 @@ import EditTurnInput from './EditTurnInput'
 import PlayerIndicator from './PlayerIndicator'
 import TurnNotification from './TurnNotification'
 import ReactionNotification from './ReactionNotification'
+import { REACTION_EMOJIS, createEmptyReactions, createEmptyUserReactions, getReactionsFromImage, getUserReactionsFromImage } from '../lib/reaction-constants'
 
 interface GameBoardProps {
   game: Game
@@ -39,28 +40,18 @@ export default function GameBoard({
     if (!newImageData || game.imageHistory.length === 0) {
       return { 
         imageId: null, 
-        reactions: { '❤️': 0, '😍': 0, '🎨': 0 },
-        userHasReacted: { '❤️': false, '😍': false, '🎨': false }
+        reactions: createEmptyReactions(),
+        userHasReacted: createEmptyUserReactions()
       }
     }
     
     // Find the current image in history (latest one)
     const latestImage = game.imageHistory[game.imageHistory.length - 1]
-    const reactions = latestImage.reactions || {}
-    const reactionUsers = latestImage.reactionUsers || {}
     
     return {
       imageId: latestImage.id || null,
-      reactions: {
-        '❤️': reactions['❤️'] || 0,
-        '😍': reactions['😍'] || 0,
-        '🎨': reactions['🎨'] || 0
-      },
-      userHasReacted: {
-        '❤️': (reactionUsers['❤️'] || []).includes(currentPlayerId),
-        '😍': (reactionUsers['😍'] || []).includes(currentPlayerId),
-        '🎨': (reactionUsers['🎨'] || []).includes(currentPlayerId)
-      }
+      reactions: getReactionsFromImage(latestImage),
+      userHasReacted: getUserReactionsFromImage(latestImage, currentPlayerId)
     }
   }
   
@@ -286,7 +277,7 @@ export default function GameBoard({
             {/* Reaction Bar - Bottom of image, thumb accessible */}
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
               <div className="bg-black/60 backdrop-blur-sm rounded-full px-6 py-3 flex space-x-4">
-                {['❤️', '😂', '🔥', '✨', '🎨'].map(emoji => {
+                {REACTION_EMOJIS.map(emoji => {
                   const hasReacted = userHasReacted[emoji]
                   const count = currentReactions[emoji]
                   
