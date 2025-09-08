@@ -27,19 +27,19 @@ export default function PromptDisplay({ game, players = [] }: PromptDisplayProps
   const fullPrompt = buildFullPrompt(game.turns)
 
   return (
-    <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+    <div className="bg-white rounded-xl shadow-lg border border-sky-blue/20 p-6">
+      <h3 className="text-xl font-bold text-prussian-blue mb-4">
         ✏️ Edit History
       </h3>
       
       {game.turns.length === 0 ? (
-        <div className="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
+        <div className="bg-sky-blue/10 rounded-lg p-4 mb-4 border border-sky-blue/30">
           <p className="text-gray-500 italic text-center">
             No edits yet. The first player will make an edit to start the game!
           </p>
         </div>
       ) : (
-        <div className="bg-gray-50 rounded-lg p-4 mb-4 border border-gray-200">
+        <div className="bg-sky-blue/10 rounded-lg p-4 mb-4 border border-sky-blue/30">
           <p className="text-sm text-gray-600 mb-2">
             Latest edit by <span className="font-semibold">{getPlayerName(game.turns[game.turns.length - 1].userId)}</span>:
           </p>

@@ -252,11 +252,16 @@ export default function GameBoard({
       
       {/* Generation Overlay */}
       {isGenerating && (
-        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg shadow-xl p-6 max-w-sm w-full text-center">
-            <div className="animate-spin h-8 w-8 border-2 border-gray-300 border-t-blue-600 rounded-full mx-auto mb-4" />
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">Generating image...</h3>
-            <p className="text-sm text-gray-600">Please wait, this may take a few seconds.</p>
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50">
+          <div className="bg-white rounded-xl shadow-2xl p-8 max-w-sm w-full text-center border border-sky-blue/20">
+            <div className="animate-spin h-10 w-10 border-3 border-sky-blue/30 border-t-blue-green rounded-full mx-auto mb-6" />
+            <h3 className="text-xl font-bold text-prussian-blue mb-3">Generating Image...</h3>
+            <p className="text-sm text-gray-600 leading-relaxed">Please wait while we create your image with Nano Banana</p>
+            <div className="mt-4 flex justify-center space-x-1">
+              <div className="w-2 h-2 bg-blue-green rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
+              <div className="w-2 h-2 bg-blue-green rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
+              <div className="w-2 h-2 bg-blue-green rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
+            </div>
           </div>
         </div>
       )}

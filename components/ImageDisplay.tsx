@@ -183,9 +183,9 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+    <div className="bg-white rounded-xl shadow-lg border border-sky-blue/20 p-6">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-lg font-semibold text-gray-900">
+        <h3 className="text-xl font-bold text-prussian-blue">
           🎨 Generated Image
         </h3>
         
@@ -206,7 +206,7 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
           />
           
           {/* Image Badge */}
-          <div className="absolute top-2 right-2 bg-black/70 text-white px-3 py-1 rounded-full text-xs font-medium">
+          <div className="absolute top-2 right-2 bg-prussian-blue/90 text-white px-3 py-1 rounded-full text-xs font-medium">
             {isSeedImage(currentImage) ? 'Starting Image' : 'AI Generated'}
           </div>
           
@@ -245,7 +245,7 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
         {/* Reaction Buttons - Positioned below the image */}
         {currentImage?.id && (
           <div className="flex justify-center">
-            <div className="bg-gray-50 rounded-full px-4 py-2 flex space-x-3 border border-gray-200">
+            <div className="bg-sky-blue/10 rounded-full px-4 py-2 flex space-x-3 border border-sky-blue/30">
               {['❤️', '😂', '🔥', '✨', '🎨'].map(emoji => {
                 const hasReacted = userHasReacted[emoji]
                 const count = currentReactions[emoji]
@@ -254,10 +254,10 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
                   <button
                     key={emoji}
                     onClick={() => handleReaction(emoji)}
-                    className={`flex flex-col items-center justify-center w-10 h-10 rounded-full transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-300 ${
+                    className={`flex flex-col items-center justify-center w-10 h-10 rounded-full transition-all duration-200 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-blue-green/50 ${
                       hasReacted 
-                        ? 'bg-blue-100 border border-blue-300' // Highlighted when user has reacted
-                        : 'bg-white border border-gray-300 hover:border-gray-400' // Normal state
+                        ? 'bg-blue-green/20 border border-blue-green' // Highlighted when user has reacted
+                        : 'bg-white border border-sky-blue/40 hover:border-sky-blue/60' // Normal state
                     }`}
                     aria-label={`${hasReacted ? 'Remove' : 'Add'} ${emoji} reaction. Current count: ${count}`}
                   >

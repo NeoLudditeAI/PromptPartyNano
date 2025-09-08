@@ -72,7 +72,7 @@ export default function TurnNotification({
 
   if (isGameComplete) {
     return (
-      <div className="bg-gradient-to-r from-emerald-500 to-emerald-600 text-white p-4 rounded-lg shadow-lg">
+      <div className="bg-gradient-to-r from-ut-orange to-success-500 text-white p-4 rounded-xl shadow-lg">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-bold">🎉 Game Complete!</h3>
@@ -80,7 +80,7 @@ export default function TurnNotification({
           </div>
           <button
             onClick={copyGameComplete}
-            className="bg-white text-emerald-600 px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 transition-colors"
+            className="bg-white text-ut-orange px-3 py-1 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors"
           >
             {copied ? 'Copied!' : 'Share'}
           </button>
@@ -91,7 +91,7 @@ export default function TurnNotification({
 
   if (!lastTurn) {
     return (
-      <div className="bg-gradient-to-r from-blue-500 to-blue-600 text-white p-4 rounded-lg shadow-lg">
+      <div className="bg-gradient-to-r from-blue-green to-primary-600 text-white p-4 rounded-xl shadow-lg">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-bold">🎨 Game Started!</h3>
@@ -99,7 +99,7 @@ export default function TurnNotification({
           </div>
           <button
             onClick={copyGameLink}
-            className="bg-white text-blue-600 px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 transition-colors"
+            className="bg-white text-blue-green px-3 py-1 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors"
           >
             {copied ? 'Copied!' : 'Share Link'}
           </button>
@@ -109,7 +109,7 @@ export default function TurnNotification({
   }
 
   return (
-    <div className="bg-gradient-to-r from-indigo-500 to-indigo-600 text-white p-4 rounded-lg shadow-lg">
+    <div className="bg-gradient-to-r from-sky-blue to-blue-green text-prussian-blue p-4 rounded-xl shadow-lg">
       <div className="space-y-2">
         <div className="flex items-center justify-between">
           <div>
@@ -121,7 +121,7 @@ export default function TurnNotification({
           </div>
           <button
             onClick={copyTurnUpdate}
-            className="bg-white text-indigo-600 px-3 py-1 rounded text-sm font-medium hover:bg-gray-100 transition-colors"
+            className="bg-white text-blue-green px-3 py-1 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors"
           >
             {copied ? 'Copied!' : 'Share'}
           </button>
