@@ -4,6 +4,8 @@
 import React, { useState, useEffect } from 'react'
 import { Game, PlayerId } from '../types'
 import { getLatestImageUrl, getImageCount, buildFullPrompt } from '../lib/game'
+import CapabilityBadges from './CapabilityBadges'
+import { detectImageCapabilities } from '../types/badges'
 
 interface ImageDisplayProps {
   game: Game
@@ -283,6 +285,22 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
             {isSeedImage(currentImage) ? 'Ready for collaborative editing!' : formatDate(currentImage.createdAt)}
           </p>
         </div>
+
+        {/* Capability Badges */}
+        {!isSeedImage(currentImage) && (
+          <div className="mt-4 flex justify-center">
+            <CapabilityBadges
+              capabilities={detectImageCapabilities(
+                currentImage.imageUrl,
+                currentImage.editCommand,
+                currentImage.sourceImageUrl,
+                false // TODO: Add reference image detection
+              )}
+              size="sm"
+              showLabels={true}
+            />
+          </div>
+        )}
       </div>
       
       {/* Thumbnail Navigation - Only show if multiple images */}
