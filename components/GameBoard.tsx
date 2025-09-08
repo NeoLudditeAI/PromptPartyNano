@@ -159,9 +159,12 @@ export default function GameBoard({
         ? game.imageHistory[game.imageHistory.length - 1].imageUrl
         : game.seedImage || undefined
       
+      // Format the edit command as a proper prompt for Nano Banana
+      const editPrompt = `Edit this image: ${text}`
+      
       await generateImageForGame(
         updatedGame.id,
-        text, // This is the edit command
+        editPrompt, // Properly formatted edit command
         async () => {}, // Empty callback since Firebase handles the update
         previousImage // Pass the previous image for editing
       )
