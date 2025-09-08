@@ -235,8 +235,8 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
           )}
         </div>
         
-        {/* Reaction Buttons - Positioned below the image */}
-        {currentImage?.id && (
+        {/* Reaction Buttons - Only show for non-seed images */}
+        {currentImage?.id && !isSeedImage(currentImage) && (
           <div className="flex justify-center">
             <div className="bg-sky-blue/10 rounded-full px-4 py-2 flex space-x-3 border border-sky-blue/30">
               {REACTION_EMOJIS.map(emoji => {
