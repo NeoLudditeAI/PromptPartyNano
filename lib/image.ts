@@ -85,12 +85,32 @@ export function enhancePromptForGemini(basePrompt: string): string {
     return basePrompt
   }
 
-  // Add style enhancements for better image generation
-  const enhancements = [
+  // Detect if this is a text-related prompt
+  const textKeywords = ['text', 'write', 'add text', 'sign', 'poster', 'headline', 'caption', 'label', 'title', 'quote', 'message']
+  const hasTextRequest = textKeywords.some(keyword => 
+    trimmedPrompt.toLowerCase().includes(keyword)
+  )
+
+  // Base enhancements for all prompts
+  const baseEnhancements = [
     'high quality',
     'detailed',
     'professional photography'
   ]
+
+  // Text-specific enhancements for better text rendering
+  const textEnhancements = [
+    'crisp, readable text',
+    'high contrast text',
+    'clear typography',
+    'legible font',
+    'sharp text edges'
+  ]
+
+  // Combine enhancements based on prompt type
+  const enhancements = hasTextRequest 
+    ? [...baseEnhancements, ...textEnhancements]
+    : baseEnhancements
 
   const enhancedPrompt = `${trimmedPrompt}, ${enhancements.join(', ')}`
   

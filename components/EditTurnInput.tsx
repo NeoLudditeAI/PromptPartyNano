@@ -121,6 +121,8 @@ export default function EditTurnInput({
       <div className="mt-4 text-sm text-gray-600">
         <p>✏️ <strong>Edit the current image</strong> with simple instructions</p>
         <p className="mt-1">💡 Examples: "make the sky blue", "add snow to peaks", "remove the hat"</p>
+        <p className="mt-1">📝 <strong>Text rendering:</strong> "add text 'SALE 50% OFF'", "write 'Welcome Home' on the door"</p>
+        <p className="mt-1">🎨 <strong>Poster examples:</strong> "create a poster with 'Grand Opening'", "add headline 'Breaking News'"</p>
         <p className="mt-1">🎯 Each edit maintains the subject's identity while making changes</p>
         <p className="mt-1">📝 Keep it concise - you have {GAME_CONFIG.MAX_TURN_LENGTH} characters per turn.</p>
       </div>
