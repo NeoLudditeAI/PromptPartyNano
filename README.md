@@ -5,28 +5,30 @@ A collaborative image editing game powered by Google's Gemini 2.5 Flash Image Pr
 ## 🎮 How It Works
 
 1. **Start**: Upload a photo or generate from a rich text prompt
-2. **Edit**: Each player submits ≤25-character edit commands (e.g., "rm coffee mug + hat")
-3. **Fusion**: Optionally attach reference images for style transfer
-4. **Reveal**: See the updated image with feature badges showing Nano Banana capabilities
-5. **Share**: Download the final image with the complete edit chain
+2. **Edit**: Each player submits ≤45-character edit commands (e.g., "rm coffee mug + hat")
+3. **Fusion**: Optionally attach reference images for style transfer (planned)
+4. **Reveal**: See the updated image with feature badges showing Nano Banana capabilities (planned)
+5. **Share**: Download the final image with the complete edit chain (planned)
 
 ## ✨ Key Features
 
-- **Iterative Editing**: Multi-turn image editing that builds on previous results
-- **Multi-image Fusion**: Style transfer and composition with reference images
-- **High-fidelity Text**: Render readable text within images
-- **Feature Badges**: Visual indicators of Nano Banana capabilities used
-- **SynthID Verification**: Google's watermark for AI-generated content
-- **Real-time Collaboration**: Turn-based editing with live updates
+- **Iterative Editing**: Multi-turn image editing that builds on previous results ✅
+- **Real-time Collaboration**: Turn-based editing with live updates ✅
+- **Image History**: Navigate through the creative journey ✅
+- **Reaction System**: Emoji reactions on generated images ✅
+- **Multi-image Fusion**: Style transfer and composition with reference images (planned)
+- **High-fidelity Text**: Render readable text within images (planned)
+- **Feature Badges**: Visual indicators of Nano Banana capabilities used (planned)
+- **SynthID Verification**: Google's watermark for AI-generated content (planned)
 
 ## 🍌 Nano Banana Capabilities Showcased
 
-- **Text-to-Image**: Generate start images from rich descriptions
-- **Image-to-Image Editing**: Iterative modifications with ≤25-char commands
-- **Multi-image Fusion**: Combine reference images for style transfer
-- **High-fidelity Text Rendering**: Create readable text within images
-- **Consistency**: Maintain visual coherence across edits
-- **SynthID**: Watermark verification for AI-generated content
+- **Text-to-Image**: Generate start images from rich descriptions ✅
+- **Image-to-Image Editing**: Iterative modifications with ≤45-char commands ✅
+- **Consistency**: Maintain visual coherence across edits ✅
+- **Multi-image Fusion**: Combine reference images for style transfer (planned)
+- **High-fidelity Text Rendering**: Create readable text within images (planned)
+- **SynthID**: Watermark verification for AI-generated content (planned)
 
 ## 🚀 Getting Started
 
@@ -76,10 +78,10 @@ This project is designed for the **Nano Banana 48 Hour Challenge** by Google Dee
 
 ### Demo Scenarios
 
-- **Creative Workflow**: Collaborative logo design with iterative refinements
-- **E-commerce**: Product visualization with style variations
-- **Storytelling**: Character consistency across multiple scenes
-- **Marketing**: Brand asset creation with text integration
+- **Creative Workflow**: Collaborative image editing with iterative refinements
+- **Educational**: Students learning through collaborative image creation
+- **Art Collective**: Artists collaborating on evolving pieces
+- **Team Brainstorming**: Visual concept development and iteration
 
 ## 🛠️ Tech Stack
 
@@ -98,7 +100,11 @@ This project is designed for the **Nano Banana 48 Hour Challenge** by Google Dee
 
 ## 🤝 Contributing
 
-This project is built for the Nano Banana Hackathon. Contributions are welcome to improve the showcase of Gemini 2.5 Flash Image Preview capabilities.
+This project is built for the Nano Banana Hackathon. The current version focuses on core collaborative editing functionality. Future contributions could add:
+- Reference image drag-and-drop for fusion
+- Feature badge detection and display
+- Export functionality with edit chain
+- SynthID verification integration
 
 ## 📄 License
 
