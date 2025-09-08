@@ -21,9 +21,9 @@ export const GAME_CONFIG = {
   MAX_PLAYERS: 6,                        // Maximum players allowed
   
   // Character Limits
-  MAX_TURN_LENGTH: 25,                   // Maximum characters per turn
+  MAX_TURN_LENGTH: 45,                   // Maximum characters per turn
   MAX_TOTAL_LENGTH: 1000,                // Maximum total prompt length
-  WARNING_THRESHOLD: 20,                 // Show warning at 80% of limit
+  WARNING_THRESHOLD: 36,                 // Show warning at 80% of limit
   
   // Game Flow
   AUTO_START_ON_FULL: false,             // Auto-start when max players reached

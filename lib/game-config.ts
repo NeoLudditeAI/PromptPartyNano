@@ -8,7 +8,7 @@ export const GAME_PRESETS: Record<string, GameConfig> = {
   QUICK: {
     ...GAME_CONFIG,
     TURNS_PER_GAME: 4,
-    MAX_TURN_LENGTH: 20,
+    MAX_TURN_LENGTH: 30,
     AUTO_START_ON_FULL: true,
   },
   
@@ -16,7 +16,7 @@ export const GAME_PRESETS: Record<string, GameConfig> = {
   STANDARD: {
     ...GAME_CONFIG,
     TURNS_PER_GAME: 6,
-    MAX_TURN_LENGTH: 25,
+    MAX_TURN_LENGTH: 45,
     AUTO_START_ON_FULL: false,
   },
   
