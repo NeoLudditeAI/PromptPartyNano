@@ -278,7 +278,7 @@ export default function GameBoard({
             {/* Reaction Bar - Bottom of image, thumb accessible */}
             <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
               <div className="bg-black/60 backdrop-blur-sm rounded-full px-6 py-3 flex space-x-4">
-                {['❤️', '😍', '🎨'].map(emoji => {
+                {['❤️', '😂', '🔥', '✨', '🎨'].map(emoji => {
                   const hasReacted = userHasReacted[emoji]
                   const count = currentReactions[emoji]
                   

@@ -246,7 +246,7 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
         {currentImage?.id && (
           <div className="flex justify-center">
             <div className="bg-gray-50 rounded-full px-4 py-2 flex space-x-3 border border-gray-200">
-              {['❤️', '😍', '🎨'].map(emoji => {
+              {['❤️', '😂', '🔥', '✨', '🎨'].map(emoji => {
                 const hasReacted = userHasReacted[emoji]
                 const count = currentReactions[emoji]
                 

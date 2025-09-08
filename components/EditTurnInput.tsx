@@ -71,8 +71,8 @@ export default function EditTurnInput({
   }
 
   return (
-    <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
-      <h3 className="text-lg font-semibold text-gray-900 mb-4">
+    <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
+      <h3 className="text-xl font-bold text-gray-900 mb-4">
         ✏️ Edit the Image
       </h3>
       
@@ -108,10 +108,10 @@ export default function EditTurnInput({
         <button
           type="submit"
           disabled={!canSubmit}
-          className={`w-full py-3 px-6 rounded-lg font-semibold transition-colors ${
+          className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 ${
             !canSubmit
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-              : 'bg-blue-600 hover:bg-blue-700 text-white shadow-sm'
+              : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
           }`}
         >
           {isSubmitting ? 'Processing Edit...' : 'Submit Edit'}
