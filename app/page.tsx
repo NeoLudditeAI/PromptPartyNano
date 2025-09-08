@@ -543,13 +543,13 @@ function HomePageContent() {
               <div className="space-y-3">
                 <button
                   onClick={() => setGameMode('create')}
-                  className="w-full bg-blue-green text-white py-3 px-4 rounded-xl hover:bg-blue-green/90 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
+                  className="w-full bg-blue-green text-white py-4 px-4 rounded-xl hover:bg-blue-green/90 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 min-h-[44px] font-semibold"
                 >
                   Create New Game
                 </button>
                 <button
                   onClick={() => setGameMode('join')}
-                  className="w-full bg-sky-blue text-prussian-blue py-3 px-4 rounded-xl hover:bg-sky-blue/90 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-semibold"
+                  className="w-full bg-sky-blue text-prussian-blue py-4 px-4 rounded-xl hover:bg-sky-blue/90 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-semibold min-h-[44px]"
                 >
                   Join Existing Game
                 </button>

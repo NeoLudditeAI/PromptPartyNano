@@ -108,7 +108,7 @@ export default function EditTurnInput({
         <button
           type="submit"
           disabled={!canSubmit}
-          className={`w-full py-3 px-6 rounded-xl font-semibold transition-all duration-200 ${
+          className={`w-full py-4 px-6 rounded-xl font-semibold transition-all duration-200 min-h-[44px] ${
             !canSubmit
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
               : 'bg-gradient-to-r from-blue-green to-primary-600 hover:from-primary-600 hover:to-blue-green text-white shadow-lg hover:shadow-xl transform hover:-translate-y-0.5'
