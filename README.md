@@ -1,4 +1,4 @@
-# 🍌 Prompt Party: Nano Banana Edit Mode
+# 🍌 Prompt Party: Nano Banana Edit Mode 🧪
 
 A collaborative image editing game powered by Google's Gemini 2.5 Flash Image Preview (Nano Banana). Players take turns making small edits to an evolving image, showcasing the advanced capabilities of iterative AI image editing.
 
