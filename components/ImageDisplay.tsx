@@ -292,8 +292,8 @@ export default function ImageDisplay({ game, currentPlayerId }: ImageDisplayProp
             <CapabilityBadges
               capabilities={detectImageCapabilities(
                 currentImage.imageUrl,
-                currentImage.editCommand,
-                currentImage.sourceImageUrl,
+                'editCommand' in currentImage ? currentImage.editCommand : undefined,
+                'sourceImageUrl' in currentImage ? currentImage.sourceImageUrl : undefined,
                 false // TODO: Add reference image detection
               )}
               size="sm"
