@@ -532,24 +532,24 @@ function HomePageContent() {
   // Main menu
   if (!game) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+      <div className="min-h-screen bg-gradient-to-br from-sky-blue/20 to-blue-green/20 flex items-center justify-center p-4">
         <div className="max-w-md w-full">
-          <h1 className="text-4xl font-bold text-gray-900 text-center mb-8">Prompt Party</h1>
+          <h1 className="text-4xl font-bold text-prussian-blue text-center mb-8">Prompt Party</h1>
           
-          <div className="bg-white rounded-lg shadow-lg p-6 space-y-4">
-            <h2 className="text-2xl font-semibold text-center mb-6 text-gray-900">Create or Join a Game</h2>
+          <div className="bg-white rounded-xl shadow-xl border border-sky-blue/20 p-6 space-y-4">
+            <h2 className="text-2xl font-bold text-center mb-6 text-prussian-blue">Create or Join a Game</h2>
             
             {gameMode === 'menu' && (
               <div className="space-y-3">
                 <button
                   onClick={() => setGameMode('create')}
-                  className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg hover:bg-blue-700 transition-colors shadow-sm"
+                  className="w-full bg-blue-green text-white py-3 px-4 rounded-xl hover:bg-blue-green/90 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5"
                 >
                   Create New Game
                 </button>
                 <button
                   onClick={() => setGameMode('join')}
-                  className="w-full bg-emerald-600 text-white py-3 px-4 rounded-lg hover:bg-emerald-700 transition-colors shadow-sm"
+                  className="w-full bg-sky-blue text-prussian-blue py-3 px-4 rounded-xl hover:bg-sky-blue/90 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 font-semibold"
                 >
                   Join Existing Game
                 </button>
@@ -754,7 +754,7 @@ function HomePageContent() {
 
   // Game lobby or active game
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 p-4">
+    <div className="min-h-screen bg-gradient-to-br from-sky-blue/10 to-blue-green/10 p-4">
       {/* Subtle identity indicator */}
       <div className="max-w-4xl mx-auto">
         {players.length > 0 && currentPlayerId && (

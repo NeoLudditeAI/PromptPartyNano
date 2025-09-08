@@ -30,11 +30,11 @@ export default function PlayerIndicator({
   const isMyTurn = currentPlayerInGame === currentPlayerId
 
   return (
-    <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+    <div className="bg-white rounded-xl shadow-lg border border-sky-blue/20 p-6">
       <div className="text-center">
         {isGameComplete ? (
           <div>
-            <h2 className="text-2xl font-bold text-emerald-600 mb-2">
+            <h2 className="text-2xl font-bold text-ut-orange mb-2">
               🎉 Game Complete!
             </h2>
             <p className="text-gray-600">
@@ -43,7 +43,7 @@ export default function PlayerIndicator({
           </div>
         ) : (
           <div>
-            <h2 className="text-2xl font-bold mb-2 text-gray-900">
+            <h2 className="text-2xl font-bold mb-2 text-prussian-blue">
               {isMyTurn ? '🎯 Your Turn!' : '⏳ Waiting...'}
             </h2>
             <p className="text-lg text-gray-600 mb-2">
@@ -65,8 +65,8 @@ export default function PlayerIndicator({
               key={playerId}
               className={`px-3 py-1 rounded-full text-sm font-medium ${
                 playerId === currentPlayerInGame
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-100 text-gray-700 border border-gray-200'
+                  ? 'bg-blue-green text-white'
+                  : 'bg-sky-blue/20 text-prussian-blue border border-sky-blue/30'
               }`}
             >
               {getPlayerName(playerId)}

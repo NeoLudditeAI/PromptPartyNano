@@ -27,8 +27,8 @@ export default function PromptDisplay({ game, players = [] }: PromptDisplayProps
   const fullPrompt = buildFullPrompt(game.turns)
 
   return (
-    <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6">
-      <h3 className="text-xl font-bold text-gray-900 mb-4">
+    <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+      <h3 className="text-lg font-semibold text-gray-900 mb-4">
         ✏️ Edit History
       </h3>
       

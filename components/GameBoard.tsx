@@ -237,9 +237,9 @@ export default function GameBoard({
           )}
           
           {isGameComplete && (
-            <div className="bg-emerald-600 text-white p-4 rounded-lg text-center shadow-lg">
-              <h3 className="text-xl font-bold">🎉 Game Complete!</h3>
-              <p>All players have taken their turns.</p>
+            <div className="bg-gradient-to-r from-ut-orange to-success-500 text-white p-6 rounded-xl text-center shadow-xl border border-ut-orange/20">
+              <h3 className="text-2xl font-bold mb-2">🎉 Game Complete!</h3>
+              <p className="text-orange-100">All players have taken their turns. Great collaborative editing!</p>
             </div>
           )}
         </div>
